@@ -1,0 +1,5 @@
+---
+ASAV1:
+  hostname: 172.31.46.102
+  groups:
+    - asa

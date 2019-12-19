@@ -1,0 +1,4 @@
+nornir
+xmltodict
+yamllint
+pylint

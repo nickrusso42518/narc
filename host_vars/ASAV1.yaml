@@ -1,0 +1,14 @@
+---
+checks:
+  - nameif: management
+    src_ip: 1.1.1.1
+    dst_ip: 2.2.2.2
+    proto: tcp
+    src_port: 1000
+    dst_port: 22
+  - nameif: management
+    src_ip: 3.3.3.3
+    dst_ip: 4.4.4.4
+    proto: udp
+    src_port: 65535
+    dst_port: 67

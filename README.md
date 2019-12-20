@@ -1,3 +1,7 @@
+[![Build Status](
+https://travis-ci.org/nickrusso42518/narc.svg?branch=master)](
+https://travis-ci.org/nickrusso42518/narc)
+
 # Nornir ASA Rule Checker
 This simple program uses the Cisco ASA `packet-tracer` utility to test traffic
 flows across the firewall. On a per-ASA basis, users specify a list of
@@ -92,4 +96,5 @@ To keep things simple (for now), the tool has some limitations:
   4. All YAML files must use `.yaml`, not `.yml`, as their
      file extensions. This minimizes Nornir modifications
 
-# notes
+## Testing
+A GNU `Makefile` is used to automate testing, and is a work in process.

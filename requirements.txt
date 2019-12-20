@@ -2,3 +2,5 @@ nornir
 xmltodict
 yamllint
 pylint
+argparse
+black

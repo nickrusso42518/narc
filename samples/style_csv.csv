@@ -1,0 +1,4 @@
+name,proto,src_ip,src_port,dst_ip,dst_port,in_intf,out_intf,action,drop_reason,success
+DNS OUTBOUND,udp,192.0.2.1,5000,8.8.8.8,53,UNKNOWN,UNKNOWN,drop,(acl-drop) Flow is denied by configured rule,False
+HTTPS OUTBOUND,tcp,192.0.2.1,5000,20.0.0.1,443,UNKNOWN,UNKNOWN,drop,(acl-drop) Flow is denied by configured rule,False
+SSH INBOUND,tcp,20.0.0.1,5000,192.0.2.1,22,UNKNOWN,UNKNOWN,drop,(acl-drop) Flow is denied by configured rule,True

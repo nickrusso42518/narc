@@ -1,14 +1,27 @@
 ---
 checks:
-  - nameif: management
-    src_ip: 1.1.1.1
-    dst_ip: 2.2.2.2
-    proto: tcp
-    src_port: 1000
-    dst_port: 22
-  - nameif: management
-    src_ip: 3.3.3.3
-    dst_ip: 4.4.4.4
+  - name: DNS OUTBOUND
+    in_intf: management
     proto: udp
-    src_port: 65535
-    dst_port: 67
+    src_ip: 192.0.2.1
+    src_port: 5000
+    dst_ip: 8.8.8.8
+    dst_port: 53
+    should: allow
+  - name: HTTPS OUTBOUND
+    in_intf: management
+    proto: tcp
+    src_ip: 192.0.2.1
+    src_port: 5000
+    dst_ip: 20.0.0.1
+    dst_port: 443
+    should: allow
+  - name: SSH INBOUND
+    in_intf: management
+    proto: tcp
+    src_ip: 20.0.0.1
+    src_port: 5000
+    dst_ip: 192.0.2.1
+    dst_port: 22
+    should: drop
+...

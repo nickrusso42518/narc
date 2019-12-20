@@ -1,0 +1,4 @@
+Results for ASAV1:
+ - udp s=192.0.2.1/5000 d=8.8.8.8/53 UNKNOWN->UNKNOWN: drop
+ - tcp s=192.0.2.1/5000 d=20.0.0.1/443 UNKNOWN->UNKNOWN: drop
+ + tcp s=20.0.0.1/5000 d=192.0.2.1/22 UNKNOWN->UNKNOWN: drop

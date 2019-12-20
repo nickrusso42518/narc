@@ -1,0 +1,94 @@
+{
+  "ASAV1": {
+    "DNS_OUTBOUND": {
+      "Phase": [
+        {
+          "id": "1",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 172.31.32.1 using egress ifc  management"
+        },
+        {
+          "id": "2",
+          "type": "ACCESS-LIST",
+          "subtype": null,
+          "result": "DROP",
+          "config": "Implicit Rule",
+          "extra": null
+        }
+      ],
+      "result": {
+        "input-interface": "UNKNOWN",
+        "input-status": "up",
+        "input-line-status": "up",
+        "output-interface": "UNKNOWN",
+        "output-status": "up",
+        "output-line-status": "up",
+        "action": "drop",
+        "drop-reason": "(acl-drop) Flow is denied by configured rule"
+      }
+    },
+    "HTTPS_OUTBOUND": {
+      "Phase": [
+        {
+          "id": "1",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 172.31.32.1 using egress ifc  management"
+        },
+        {
+          "id": "2",
+          "type": "ACCESS-LIST",
+          "subtype": null,
+          "result": "DROP",
+          "config": "Implicit Rule",
+          "extra": null
+        }
+      ],
+      "result": {
+        "input-interface": "UNKNOWN",
+        "input-status": "up",
+        "input-line-status": "up",
+        "output-interface": "UNKNOWN",
+        "output-status": "up",
+        "output-line-status": "up",
+        "action": "drop",
+        "drop-reason": "(acl-drop) Flow is denied by configured rule"
+      }
+    },
+    "SSH_INBOUND": {
+      "Phase": [
+        {
+          "id": "1",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 172.31.32.1 using egress ifc  management"
+        },
+        {
+          "id": "2",
+          "type": "ACCESS-LIST",
+          "subtype": null,
+          "result": "DROP",
+          "config": "Implicit Rule",
+          "extra": null
+        }
+      ],
+      "result": {
+        "input-interface": "UNKNOWN",
+        "input-status": "up",
+        "input-line-status": "up",
+        "output-interface": "UNKNOWN",
+        "output-status": "up",
+        "output-line-status": "up",
+        "action": "drop",
+        "drop-reason": "(acl-drop) Flow is denied by configured rule"
+      }
+    }
+  }
+}

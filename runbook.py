@@ -13,6 +13,28 @@ from nornir.plugins.tasks.data import load_yaml
 import style
 
 
+def main(args):
+    """
+    Execution begins here.
+    """
+
+    # Evaluate args.style to select a styling function (default is terse)
+    style_map = {
+        "terse": style.style_terse,
+        "csv": style.style_csv,
+        "json": style.style_json,
+    }
+    display_result = style_map.get(args.style, style.style_terse)
+
+    # Initialize nornir and invoke the custom "run_checks" task
+    nornir = InitNornir()
+    aresult = nornir.run(task=run_checks)
+
+    # Call the user-specified display_result method passing in the
+    # nornir AggregatedResult and failonly Boolean
+    display_result(aresult, args.failonly)
+
+
 def run_checks(task):
     """
     Loads in host-specific variables, assembles proper 'packet-tracer'
@@ -32,28 +54,8 @@ def run_checks(task):
         task.run(task=netmiko_send_command, command_string=cmd)
 
 
-def main(args):
-    """
-    Execution begins here.
-    """
-
-    # Evaluate args.style to select a styling function (default is terse)
-    style_map = {
-        "terse": style.style_terse,
-        "csv": style.style_csv,
-        "json": style.style_json,
-    }
-    display_result = style_map.get(args.style, style.style_terse)
-
-    # Initialize nornir and invoke the  task.
-    nornir = InitNornir()
-
-    # Initialize nornir and invoke the custom "run_checks" task
-    aresult = nornir.run(task=run_checks)
-    display_result(aresult, args.failonly)
-
-
 if __name__ == "__main__":
+    # Use argparse to account for various command line options (-s and -f)
     PARSER = argparse.ArgumentParser()
     PARSER.add_argument(
         "-s",
@@ -66,7 +68,7 @@ if __name__ == "__main__":
     PARSER.add_argument(
         "-f",
         "--failonly",
-        help="print failures (should != action) only",
+        help="print failures (ie, undesirable results) only",
         action="store_true",
     )
     main(PARSER.parse_args())

@@ -1,5 +1,9 @@
 ---
 ASAV1:
-  hostname: 172.31.35.67
-  groups:
-    - asa
+  hostname: "192.0.2.1"
+  groups: ["asa"]
+
+ASAV2:
+  hostname: "192.0.2.2"
+  groups: ["asa"]
+...

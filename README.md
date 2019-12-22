@@ -10,9 +10,10 @@ in a variety of formats. Both IPv4 and IPv6 are supported.
 
 ## High-level Structure
 This project is built on two powerful Python-based tools:
-  1. Nornir, a task execution framework with concurrency support
-  2. Netmiko, a library for accessing network device command lines
-
+  1. [Nornir](https://github.com/nornir-automation/nornir),
+     a  task execution framework with concurrency support
+  2. [Netmiko](https://github.com/ktbyers/netmiko),
+     a library for accessing network device command lines
 
 ## Variables
 The `host_vars/` directory contains individual YAML files, one per ASA, that
@@ -50,6 +51,11 @@ checks:
     should: drop
 ...
 ```
+
+You can also use JSON format, which may bring better performance when `checks`
+is very large. If both `.json` and `.yaml` files exist for a given host, the
+JSON file is given preference and the YAML file is ignored. If neither file
+is specified, the Nornir task raises a `FileNotFoundError`.
 
 Note that it is uncommon for firewalls to filter traffic based on source port.
 The `packet-tracer` utility requires specifying a value. Additionally, the
@@ -92,9 +98,14 @@ To keep things simple (for now), the tool has some limitations:
   1. Only `tcp` and `udp` are supported options for `proto`
   2. Only source and destination IP matches are supported
   3. All keys in the `checks` directionaries must be specified,
-     even if not relevant to a particular test (source check, etc.)
+     even if not relevant to a particular test (source port, etc.)
   4. All YAML files must use `.yaml`, not `.yml`, as their
      file extensions. This minimizes Nornir modifications
 
 ## Testing
-A GNU `Makefile` is used to automate testing, and is a work in process.
+A GNU `Makefile` is used to automate testing with the following targets:
+  * `lint`: Runs YAML and Python linters, as well as a Python formatter
+  * `dry`: Runs a series of dryrun tests to ensure the code works. These
+    do not communicate with any ASAs and are handy for regression tests
+  * `clean`: Deletes any Nornir artifacts, such as `.pyc` and `.log` files
+  * `all`: Default target that runs the sequence `clean lint dry`

@@ -1,27 +1,27 @@
 ---
 checks:
-  - name: DNS OUTBOUND
-    in_intf: management
-    proto: udp
-    src_ip: 192.0.2.1
+  - name: "DNS OUTBOUND"
+    in_intf: "management"
+    proto: "udp"
+    src_ip: "192.0.2.1"
     src_port: 5000
-    dst_ip: 8.8.8.8
+    dst_ip: "8.8.8.8"
     dst_port: 53
-    should: allow
-  - name: HTTPS OUTBOUND
-    in_intf: management
-    proto: tcp
-    src_ip: 192.0.2.1
+    should: "allow"
+  - name: "HTTPS OUTBOUND"
+    in_intf: "management"
+    proto: "tcp"
+    src_ip: "192.0.2.1"
     src_port: 5000
-    dst_ip: 20.0.0.1
+    dst_ip: "20.0.0.1"
     dst_port: 443
-    should: allow
-  - name: SSH INBOUND
-    in_intf: management
-    proto: tcp
-    src_ip: 20.0.0.1
+    should: "allow"
+  - name: "SSH INBOUND"
+    in_intf: "management"
+    proto: "tcp"
+    src_ip: "20.0.0.1"
     src_port: 5000
-    dst_ip: 192.0.2.1
+    dst_ip: "192.0.2.1"
     dst_port: 22
-    should: drop
+    should: "drop"
 ...

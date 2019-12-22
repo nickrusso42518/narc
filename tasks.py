@@ -37,14 +37,46 @@ def run_checks(task, dryrun):
         # Else, it's a live run, assemble the packet-tracer command
         # and send to the ASA using netmiko
         else:
-            cmd = (
-                "packet-tracer input "
-                f"{chk['in_intf']} {chk['proto']} "
-                f"{chk['src_ip']} {chk['src_port']} "
-                f"{chk['dst_ip']} {chk['dst_port']} "
-                "xml"
-            )
+            cmd = _get_cmd(chk)
             task.run(task=netmiko_send_command, command_string=cmd)
+
+
+def _get_cmd(chk):
+    """
+    Assemble the correct "packet-tracer" command based on the "proto"
+    value. TCP/UDP use source/destination ports, ICMP uses type/code,
+    and other protocols use neither. Returns a valid "packet-tracker"
+    command that can be issued to an ASA without further modification.
+    """
+
+    proto = str(chk["proto"]).lower()
+    cmd = "packet-tracer input "
+
+    # Check for TCP (6) or UDP (17)
+    if proto in ["tcp", "6", "udp", "17"]:
+        cmd += (
+            f"{chk['in_intf']} {chk['proto']} "
+            f"{chk['src_ip']} {chk['src_port']} "
+            f"{chk['dst_ip']} {chk['dst_port']} "
+        )
+
+    # Check for ICMP (1)
+    elif proto in ["icmp", "1"]:
+        cmd += (
+            f"{chk['in_intf']} {chk['proto']} "
+            f"{chk['src_ip']} {chk['icmp_type']} "
+            f"{chk['icmp_code']} {chk['dst_ip']} "
+        )
+
+    # Protocol is an uncommon protocol specified numerically
+    else:
+        cmd += (
+            f"{chk['in_intf']} {chk['proto']} "
+            f"{chk['src_ip']} {chk['dst_ip']} "
+        )
+
+    # Append "xml" to the command string to specify XML output format
+    return cmd + "xml"
 
 
 def _mock_packet_trace(task, chk):

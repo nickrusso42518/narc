@@ -25,30 +25,44 @@ which is shown below.
 ```
 ---
 checks:
-  - name: DNS OUTBOUND
-    in_intf: inside
-    proto: udp
-    src_ip: 192.0.2.1
+  - name: "DNS OUTBOUND"
+    in_intf: "management"
+    proto: "udp"
+    src_ip: "192.0.2.1"
     src_port: 5000
-    dst_ip: 8.8.8.8
+    dst_ip: "8.8.8.8"
     dst_port: 53
-    should: allow
-  - name: HTTPS OUTBOUND
-    in_intf: inside
-    proto: tcp
-    src_ip: 192.0.2.1
+    should: "allow"
+  - name: "HTTPS OUTBOUND"
+    in_intf: "management"
+    proto: "tcp"
+    src_ip: "192.0.2.1"
     src_port: 5000
-    dst_ip: 20.0.0.1
+    dst_ip: "20.0.0.1"
     dst_port: 443
-    should: allow
-  - name: SSH INBOUND
-    in_intf: outside
-    proto: tcp
-    src_ip: 20.0.0.1
+    should: "allow"
+  - name: "SSH INBOUND"
+    in_intf: "management"
+    proto: 6
+    src_ip: "20.0.0.1"
     src_port: 5000
-    dst_ip: 192.0.2.1
+    dst_ip: "192.0.2.1"
     dst_port: 22
-    should: drop
+    should: "drop"
+  - name: "PING OUTBOUND"
+    in_intf: "management"
+    proto: "icmp"
+    src_ip: "192.0.2.1"
+    icmp_type: 8
+    icmp_code: 0
+    dst_ip: "20.0.0.1"
+    should: "allow"
+  - name: "L2TP OUTBOUND"
+    in_intf: "management"
+    proto: 115
+    src_ip: "192.0.2.1"
+    dst_ip: "20.0.0.1"
+    should: "allow"
 ...
 ```
 
@@ -56,6 +70,13 @@ You can also use JSON format, which may bring better performance when `checks`
 is very large. If both `.json` and `.yaml` files exist for a given host, the
 JSON file is given preference and the YAML file is ignored. If neither file
 is specified, the Nornir task raises a `FileNotFoundError`.
+
+You can use the IP protocol number (1-255) or the protocol name, assuming the
+ASA supports it. Generally, only the names `icmp`, `tcp`, and `udp` are
+supported. For `icmp`, you must specify the `icmp_type` and `icmp_code`.
+For `tcp` or `udp`, you must specify the `src_port` and `dst_port`. For
+all other protocols (numbers other than 1, 6, and 17), you only need to
+specify the `src_ip` and `dst_ip`.
 
 Note that it is uncommon for firewalls to filter traffic based on source port.
 The `packet-tracer` utility requires specifying a value. Additionally, the
@@ -95,11 +116,10 @@ To improve usability, the tool offers some minor options:
 
 ## Limitations
 To keep things simple (for now), the tool has some limitations:
-  1. Only `tcp` and `udp` are supported options for `proto`
-  2. Only source and destination IP matches are supported
-  3. All keys in the `checks` directionaries must be specified,
+  1. Only source and destination IP matches are supported
+  2. All keys in the `checks` directionaries must be specified,
      even if not relevant to a particular test (source port, etc.)
-  4. All YAML files must use `.yaml`, not `.yml`, as their
+  3. All YAML files must use `.yaml`, not `.yml`, as their
      file extensions. This minimizes Nornir modifications
 
 ## Testing

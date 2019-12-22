@@ -23,12 +23,30 @@
     {
       "name": "SSH INBOUND",
       "in_intf": "management",
-      "proto": "tcp",
+      "proto": 6,
       "src_ip": "20.0.0.1",
       "src_port": 5000,
       "dst_ip": "192.0.2.1",
       "dst_port": 22,
       "should": "drop"
+    },
+    {
+      "name": "PING OUTBOUND",
+      "in_intf": "management",
+      "proto": "icmp",
+      "src_ip": "192.0.2.1",
+      "icmp_type": 8,
+      "icmp_code": 0,
+      "dst_ip": "20.0.0.1",
+      "should": "allow"
+    },
+    {
+      "name": "L2TP OUTBOUND",
+      "in_intf": "management",
+      "proto": 115,
+      "src_ip": "192.0.2.1",
+      "dst_ip": "20.0.0.1",
+      "should": "allow"
     }
   ]
 }

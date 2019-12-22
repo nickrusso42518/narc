@@ -48,12 +48,12 @@ def _style_csv(aresult, failonly):
     Prints the result in CSV format which includes the user-specified
     name and overall test result. The columns are as follows, split into
     two lines for readability.
-        name,proto,src_ip,src_port,dst_ip,dst_port,
-        in_intf,out_intf,action,drop_reason,success
+        host,name,proto,icmp type, icmp code,src_ip,src_port,dst_ip,
+        dst_port,in_intf,out_intf,action,drop_reason,success
     """
     print(
-        "host,name,proto,src_ip,src_port,dst_ip,dst_port,"
-        "in_intf,out_intf,action,drop_reason,success"
+        "host,name,proto,icmp type,icmp code,src_ip,src_port,dst_ip,"
+        "dst_port,in_intf,out_intf,action,drop_reason,success"
     )
     overall_success = True
     for host, mresult in aresult.items():
@@ -69,16 +69,35 @@ def _style_csv(aresult, failonly):
             success = chk["should"].lower() == action.lower()
 
             if (not failonly) or (failonly and not success):
-                drop_reason = data["root"]["result"].get("drop-reason", "")
+                proto = str(chk["proto"]).lower()
+                text = f"{host},{chk['name']},{chk['proto']},"
+
+                # Check for TCP (6) or UDP (17)
+                if proto in ["tcp", "6", "udp", "17"]:
+                    text += (
+                        f",,{chk['src_ip']},{chk['src_port']},"
+                        f"{chk['dst_ip']},{chk['dst_port']},"
+                    )
+
+                # Check for ICMP (1)
+                elif proto in ["icmp", "1"]:
+                    text += (
+                        f"{chk['icmp_type']},{chk['icmp_code']},"
+                        f"{chk['src_ip']},,{chk['dst_ip']},,"
+                    )
+
+                # Protocol is an uncommon protocol specified numerically
+                else:
+                    text += f",,{chk['src_ip']},,{chk['dst_ip']},,"
+
+                # Finish the text by adding the drop reason (optional)
+                # and ingress/egress interfaces, which are protocol-agnostic
                 in_intf = f"{data['root']['result']['input-interface']}"
                 out_intf = f"{data['root']['result']['output-interface']}"
-                print(
-                    f"{host},{chk['name']},{chk['proto']},"
-                    f"{chk['src_ip']},{chk['src_port']},"
-                    f"{chk['dst_ip']},{chk['dst_port']},"
-                    f"{in_intf},{out_intf},{action},"
-                    f"{drop_reason},{success}"
-                )
+                drop_reason = data["root"]["result"].get("drop-reason", "")
+                text += f"{in_intf},{out_intf},{action},{drop_reason},{success}"
+                print(text)
+
             if not success:
                 overall_success = False
 
@@ -90,9 +109,11 @@ def _style_terse(aresult, failonly):
     Prints the result in terse format (compressed to one line)
     Example output is shown below:
       Results for ASAV1:
-       - udp s=192.0.2.1/5000 d=8.8.8.8/53 UNKNOWN->UNKNOWN: drop
-       - tcp s=192.0.2.1/5000 d=20.0.0.1/443 UNKNOWN->UNKNOWN: drop
-       + tcp s=20.0.0.1/5000 d=192.0.2.1/22 UNKNOWN->UNKNOWN: drop
+       - udp s=192.0.2.1/5000 d=8.8.8.8/53 UNKNOWN->UNKNOWN: DROP
+       - tcp s=192.0.2.1/5000 d=20.0.0.1/443 UNKNOWN->UNKNOWN: DROP
+       + tcp s=20.0.0.1/5000 d=192.0.2.1/22 UNKNOWN->UNKNOWN: DROP
+       + icmp 8/0 s=20.0.0.1 d=192.0.2.1 UNKNOWN->UNKNOWN: DROP
+       + 115 s=192.0.2.1 d=20.0.0.1 UNKNOWN->UNKNOWN: ALLOW
     """
     overall_success = True
     for host, mresult in aresult.items():
@@ -109,15 +130,35 @@ def _style_terse(aresult, failonly):
             success = chk["should"].lower() == action.lower()
 
             if (not failonly) or (failonly and not success):
-                # Print the output using the user-specified style
+
+                # Use local variables to simplify string formatting
+                proto = str(chk["proto"]).lower()
+                text = f" {'+' if success else '-'} {chk['proto']} "
+
+                # Check for TCP (6) or UDP (17)
+                if proto in ["tcp", "6", "udp", "17"]:
+                    text += (
+                        f"s={chk['src_ip']}/{chk['src_port']} "
+                        f"d={chk['dst_ip']}/{chk['dst_port']} "
+                    )
+
+                # Check for ICMP (1)
+                elif proto in ["icmp", "1"]:
+                    text += (
+                        f"{chk['icmp_type']}/{chk['icmp_code']} "
+                        f"s={chk['src_ip']} d={chk['dst_ip']} "
+                    )
+
+                # Protocol is an uncommon protocol specified numerically
+                else:
+                    text += f"s={chk['src_ip']} d={chk['dst_ip']} "
+
+                # Append interface strings and action to the output string
                 in_intf = f"{data['root']['result']['input-interface']}"
                 out_intf = f"{data['root']['result']['output-interface']}"
-                print(
-                    f" {'+' if success else '-'} {chk['proto']} "
-                    f"s={chk['src_ip']}/{chk['src_port']} "
-                    f"d={chk['dst_ip']}/{chk['dst_port']} "
-                    f"{in_intf}->{out_intf}: {action}"
-                )
+                text += f"{in_intf}->{out_intf}: {action}"
+                print(text)
+
             if not success:
                 overall_success = False
 

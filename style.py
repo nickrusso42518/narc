@@ -10,12 +10,13 @@ import json
 import xmltodict
 
 
-def style_json(aresult, failonly):
+def _style_json(aresult, failonly):
     """
     Prints the result in JSON format which includes the user-specified
     name and overall test result.
     """
     root_dict = {}
+    overall_success = True
     for host, mresult in aresult.items():
         checks = mresult[1].result["checks"]
         host_dict = {}
@@ -33,13 +34,16 @@ def style_json(aresult, failonly):
             success = chk["should"].lower() == action.lower()
             if (not failonly) or (failonly and not success):
                 host_dict.update(data)
+            if not success:
+                overall_success = False
 
         root_dict.update({host: host_dict})
 
     print(json.dumps(root_dict, indent=2))
+    return overall_success
 
 
-def style_csv(aresult, failonly):
+def _style_csv(aresult, failonly):
     """
     Prints the result in CSV format which includes the user-specified
     name and overall test result. The columns are as follows, split into
@@ -51,6 +55,7 @@ def style_csv(aresult, failonly):
         "host,name,proto,src_ip,src_port,dst_ip,dst_port,"
         "in_intf,out_intf,action,drop_reason,success"
     )
+    overall_success = True
     for host, mresult in aresult.items():
         checks = mresult[1].result["checks"]
 
@@ -74,9 +79,13 @@ def style_csv(aresult, failonly):
                     f"{in_intf},{out_intf},{action},"
                     f"{drop_reason},{success}"
                 )
+            if not success:
+                overall_success = False
+
+    return overall_success
 
 
-def style_terse(aresult, failonly):
+def _style_terse(aresult, failonly):
     """
     Prints the result in terse format (compressed to one line)
     Example output is shown below:
@@ -85,6 +94,7 @@ def style_terse(aresult, failonly):
        - tcp s=192.0.2.1/5000 d=20.0.0.1/443 UNKNOWN->UNKNOWN: drop
        + tcp s=20.0.0.1/5000 d=192.0.2.1/22 UNKNOWN->UNKNOWN: drop
     """
+    overall_success = True
     for host, mresult in aresult.items():
         print(f"Results for {host}:")
         checks = mresult[1].result["checks"]
@@ -108,3 +118,24 @@ def style_terse(aresult, failonly):
                     f"d={chk['dst_ip']}/{chk['dst_port']} "
                     f"{in_intf}->{out_intf}: {action}"
                 )
+            if not success:
+                overall_success = False
+
+    return overall_success
+
+
+def process_result(aresult, failonly, style=_style_terse):
+    """
+    This function serves as an decision point as it calls other functions
+    based on the desired "style". The default style is "terse", and if
+    an invalid style is supplied, terse is also chosen. The function
+    returns True if all checks pass, or False if at least one fails.
+    """
+    # Evaluate args.style to select a styling function (default is terse)
+    style_map = {
+        "terse": _style_terse,
+        "csv": _style_csv,
+        "json": _style_json,
+    }
+    choice = style_map.get(style, _style_terse)
+    return choice(aresult, failonly)

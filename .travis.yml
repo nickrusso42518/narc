@@ -11,6 +11,7 @@ install:
 before_script:
   - "make lint"
 
-# Perform runbook testing with mock ASA inputs. TODO
+# Perform runbook testing with mock ASA inputs.
 script:
-  - "true"
+  - "make test"
+...

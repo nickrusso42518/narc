@@ -18,7 +18,7 @@ checks:
     should: "allow"
   - id: "SSH INBOUND"
     in_intf: "management"
-    proto: 256
+    proto: 6
     src_ip: "20.0.0.1"
     src_port: 5000
     dst_ip: "192.0.2.1"
@@ -28,7 +28,7 @@ checks:
     in_intf: "management"
     proto: "icmp"
     src_ip: "192.0.2.1"
-    icmp_type: -1
+    icmp_type: 8
     icmp_code: 0
     dst_ip: "20.0.0.1"
     should: "allow"
@@ -37,4 +37,5 @@ checks:
     proto: 115
     src_ip: "192.0.2.1"
     dst_ip: "20.0.0.1"
+    should: "allow"
 ...

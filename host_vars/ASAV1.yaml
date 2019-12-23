@@ -1,6 +1,6 @@
 ---
 checks:
-  - name: "DNS OUTBOUND"
+  - id: "DNS OUTBOUND"
     in_intf: "management"
     proto: "udp"
     src_ip: "192.0.2.1"
@@ -8,7 +8,7 @@ checks:
     dst_ip: "8.8.8.8"
     dst_port: 53
     should: "allow"
-  - name: "HTTPS OUTBOUND"
+  - id: "HTTPS OUTBOUND"
     in_intf: "management"
     proto: "tcp"
     src_ip: "192.0.2.1"
@@ -16,7 +16,7 @@ checks:
     dst_ip: "20.0.0.1"
     dst_port: 443
     should: "allow"
-  - name: "SSH INBOUND"
+  - id: "SSH INBOUND"
     in_intf: "management"
     proto: 6
     src_ip: "20.0.0.1"
@@ -24,7 +24,7 @@ checks:
     dst_ip: "192.0.2.1"
     dst_port: 22
     should: "drop"
-  - name: "PING OUTBOUND"
+  - id: "PING OUTBOUND"
     in_intf: "management"
     proto: "icmp"
     src_ip: "192.0.2.1"
@@ -32,7 +32,7 @@ checks:
     icmp_code: 0
     dst_ip: "20.0.0.1"
     should: "allow"
-  - name: "L2TP OUTBOUND"
+  - id: "L2TP OUTBOUND"
     in_intf: "management"
     proto: 115
     src_ip: "192.0.2.1"

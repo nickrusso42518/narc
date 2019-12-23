@@ -25,12 +25,12 @@ def _style_json(aresult, failonly):
         # netmiko results (output)
         for chk, output in zip(checks, mresult[2:]):
 
-            # Convert from XML to Python objects, using the check name
-            # hostname as the topmost key. Spaces in the check names are
+            # Convert from XML to Python objects, using the check id
+            # hostname as the topmost key. Spaces in the check ids are
             # replaced with underscopes to form proper XML
-            chk_name = chk["name"].replace(" ", "_")
-            data = xmltodict.parse(f"<{chk_name}>{output.result}</{chk_name}>")
-            action = data[chk_name]["result"]["action"]
+            chk_id = chk["id"].replace(" ", "_")
+            data = xmltodict.parse(f"<{chk_id}>{output.result}</{chk_id}>")
+            action = data[chk_id]["result"]["action"]
             success = chk["should"].lower() == action.lower()
             if (not failonly) or (failonly and not success):
                 host_dict.update(data)
@@ -46,13 +46,13 @@ def _style_json(aresult, failonly):
 def _style_csv(aresult, failonly):
     """
     Prints the result in CSV format which includes the user-specified
-    name and overall test result. The columns are as follows, split into
+    id and overall test result. The columns are as follows, split into
     two lines for readability.
-        host,name,proto,icmp type, icmp code,src_ip,src_port,dst_ip,
+        host,id,proto,icmp type, icmp code,src_ip,src_port,dst_ip,
         dst_port,in_intf,out_intf,action,drop_reason,success
     """
     print(
-        "host,name,proto,icmp type,icmp code,src_ip,src_port,dst_ip,"
+        "host,id,proto,icmp type,icmp code,src_ip,src_port,dst_ip,"
         "dst_port,in_intf,out_intf,action,drop_reason,success"
     )
     overall_success = True
@@ -70,7 +70,7 @@ def _style_csv(aresult, failonly):
 
             if (not failonly) or (failonly and not success):
                 proto = str(chk["proto"]).lower()
-                text = f"{host},{chk['name']},{chk['proto']},"
+                text = f"{host},{chk['id']},{chk['proto']},"
 
                 # Check for TCP (6) or UDP (17)
                 if proto in ["tcp", "6", "udp", "17"]:
@@ -117,7 +117,6 @@ def _style_terse(aresult, failonly):
     """
     overall_success = True
     for host, mresult in aresult.items():
-        print(f"Results for {host}:")
         checks = mresult[1].result["checks"]
 
         # Iterate over the list of checks (input) and the corresponding
@@ -130,34 +129,7 @@ def _style_terse(aresult, failonly):
             success = chk["should"].lower() == action.lower()
 
             if (not failonly) or (failonly and not success):
-
-                # Use local variables to simplify string formatting
-                proto = str(chk["proto"]).lower()
-                text = f" {'+' if success else '-'} {chk['proto']} "
-
-                # Check for TCP (6) or UDP (17)
-                if proto in ["tcp", "6", "udp", "17"]:
-                    text += (
-                        f"s={chk['src_ip']}/{chk['src_port']} "
-                        f"d={chk['dst_ip']}/{chk['dst_port']} "
-                    )
-
-                # Check for ICMP (1)
-                elif proto in ["icmp", "1"]:
-                    text += (
-                        f"{chk['icmp_type']}/{chk['icmp_code']} "
-                        f"s={chk['src_ip']} d={chk['dst_ip']} "
-                    )
-
-                # Protocol is an uncommon protocol specified numerically
-                else:
-                    text += f"s={chk['src_ip']} d={chk['dst_ip']} "
-
-                # Append interface strings and action to the output string
-                in_intf = f"{data['root']['result']['input-interface']}"
-                out_intf = f"{data['root']['result']['output-interface']}"
-                text += f"{in_intf}->{out_intf}: {action}"
-                print(text)
+                print(f"{host}: {chk['id']} success -> {success}")
 
             if not success:
                 overall_success = False

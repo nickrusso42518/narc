@@ -1,7 +1,7 @@
 {
   "checks": [
     {
-      "name": "DNS OUTBOUND",
+      "id": "DNS OUTBOUND",
       "in_intf": "management",
       "proto": "udp",
       "src_ip": "192.0.2.1",
@@ -11,7 +11,7 @@
       "should": "allow"
     },
     {
-      "name": "HTTPS OUTBOUND",
+      "id": "HTTPS OUTBOUND",
       "in_intf": "management",
       "proto": "tcp",
       "src_ip": "192.0.2.1",
@@ -21,7 +21,7 @@
       "should": "allow"
     },
     {
-      "name": "SSH INBOUND",
+      "id": "SSH INBOUND",
       "in_intf": "management",
       "proto": 6,
       "src_ip": "20.0.0.1",
@@ -31,7 +31,7 @@
       "should": "drop"
     },
     {
-      "name": "PING OUTBOUND",
+      "id": "PING OUTBOUND",
       "in_intf": "management",
       "proto": "icmp",
       "src_ip": "192.0.2.1",
@@ -41,7 +41,7 @@
       "should": "allow"
     },
     {
-      "name": "L2TP OUTBOUND",
+      "id": "L2TP OUTBOUND",
       "in_intf": "management",
       "proto": 115,
       "src_ip": "192.0.2.1",

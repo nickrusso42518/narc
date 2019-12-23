@@ -6,29 +6,182 @@ Purpose: Define custom Nornir tasks for use with the main runbook.
 """
 
 import os
+from netaddr import IPAddress
+from netaddr.core import AddrFormatError
 from nornir.plugins.tasks.networking import netmiko_send_command
 from nornir.plugins.tasks.data import load_json, load_yaml
 
 
-def run_checks(task, dryrun):
+def load_checks(task):
     """
-    Loads in host-specific variables, assembles proper 'packet-tracer'
-    commands, issues them to the Cisco ASAs via netmiko, and record results.
-    Returns a list of strings containing each command issued in sequence.
+    Loads in host-specific variables from JSON (primary) or YAML
+    (secondary) files from the 'host_vars/' directory.
     """
 
     # Attempt to variables from JSON first, then YAML.
     # If neither are present, raise a FileNotFoundError
     file_base = f"host_vars/{task.host.name}"
     if os.path.exists(f"{file_base}.json"):
-        checks = task.run(task=load_json, file=f"{file_base}.json")
+        data = task.run(task=load_json, file=f"{file_base}.json")
     elif os.path.exists(f"{file_base}.yaml"):
-        checks = task.run(task=load_yaml, file=f"{file_base}.yaml")
+        data = task.run(task=load_yaml, file=f"{file_base}.yaml")
     else:
-        raise FileNotFoundError(f"{file_base} json/yaml missing")
+        raise FileNotFoundError(f"{file_base} json/yaml file missing")
+
+
+def validate_checks(task, load_ar):
+    """
+    Perform data validation on the 'checks' list.
+    """
+
+    # IP addresses are valid IPv4 or IPv6, and not mixed within a single rule
+    # names are unique (they are keys in JSON format and differentiators in terse format)
+    fail_list = []
+    for chk in load_ar[task.host.name][1].result["checks"]:
+        # Ensure required fields are present
+        for req_field in ["id", "proto", "in_intf", "src_ip", "dst_ip", "should"]:
+            _validate_check(
+                req_field not in chk,
+                chk,
+                fail_list,
+                f"missing '{req_field}', always required",
+            )
+
+        # If source IP exists, make sure it is a valid IPv4/IPv6 address
+        src_ip = None
+        src_ip_str = chk.get("src_ip")
+        if src_ip_str is not None:
+            try:
+                src_ip = IPAddress(src_ip_str)
+            except AddrFormatError:
+                breakpoint()
+                _validate_check(
+                    True,
+                    chk,
+                    fail_list,
+                    "'src_ip' must be a valid IPv4 or IPv6 address string",
+                )
+
+        # If destination IP exists, make sure it is a valid IPv4/IPv6 address
+        dst_ip = None
+        dst_ip_str = chk.get("dst_ip")
+        if dst_ip_str is not None:
+            try:
+                dst_ip = IPAddress(dst_ip_str)
+            except AddrFormatError:
+                _validate_check(
+                    True,
+                    chk,
+                    fail_list,
+                    "'dst_ip' must be a valid IPv4 or IPv6 address string",
+                )
+
+        # Ensure IP addresses are the same version
+        if dst_ip is not None and src_ip is not None:
+            _validate_check(
+                src_ip.version != dst_ip.version,
+                chk,
+                fail_list,
+                "'src_ip' and 'dst_ip' must be same version (v4 or v6)",
+            )
+
+        # Ensure proto is valid
+        try:
+            proto_num = int(chk["proto"])
+            # Proto is an int; check range
+            _validate_check(
+                proto_num < 0 or proto_num > 255,
+                chk,
+                fail_list,
+                f"'proto' must be int 0-255 or ['tcp', 'udp', 'icmp']",
+            )
+        except ValueError:
+            # Proto is not an int (likely string); check string values
+            _validate_check(
+                chk["proto"].lower() not in ["tcp", "udp", "icmp"],
+                chk,
+                fail_list,
+                f"'proto' must be int 0-255 or ['tcp', 'udp', 'icmp']",
+            )
+
+        # Ensure "should" is a valid action (allow or drop)
+        should_str = chk.get("should")
+        if should_str is not None:
+            _validate_check(
+                should_str.lower() not in ["allow", "drop"],
+                chk,
+                fail_list,
+                f"'should' must be 'allow' or 'drop'",
+            )
+
+        # Perform TCP/UDP-specific validation
+        if chk["proto"] in ["tcp", "6", "udp", "17"]:
+            # Ensure TCP/UDP checks specify a source/destination port
+            for req_field in ["src_port", "dst_port"]:
+                _validate_check(
+                    req_field not in chk,
+                    chk,
+                    fail_list,
+                    f"missing '{req_field}', required for TCP/UDP",
+                )
+
+                # Ports are defined; now ensure the values are valid
+                if req_field in chk:
+                    try:
+                        port_num = int(chk[req_field])
+                    except ValueError:
+                        port_num = None
+
+                    _validate_check(
+                        port_num is None or port_num < 0 or port_num > 65535,
+                        chk,
+                        fail_list,
+                        f"Invalid '{req_field}', must be integer 0-65535",
+                    )
+
+        # Perform ICMP-specific validation
+        if chk["proto"] in ["icmp", "1"]:
+            # Ensure ICMP checks specify an ICMP type/code
+            for req_field in ["icmp_type", "icmp_code"]:
+                _validate_check(
+                    req_field not in chk,
+                    chk,
+                    fail_list,
+                    f"missing '{req_field}', required for ICMP",
+                )
+                # Types and codes are defined; now ensure the values are valid
+                if req_field in chk:
+                    try:
+                        icmp_num = int(chk[req_field])
+                    except ValueError:
+                        icmp_num = None
+
+                    _validate_check(
+                        icmp_num is None or icmp_num < 0 or icmp_num > 255,
+                        chk,
+                        fail_list,
+                        f"Invalid '{req_field}', must be integer 0-255",
+                    )
+
+    # Return list of all failures; empty list means success
+    return fail_list
+
+
+def _validate_check(fail_condition, chk, fail_list, reason):
+    if fail_condition:
+        chk.update({"fail_reason": reason})
+        fail_list.append(chk)
+
+
+def run_checks(task, load_ar, dryrun):
+    """
+    Loads in host-specific variables, assembles proper 'packet-tracer'
+    commands, issues them to the Cisco ASAs via netmiko, and record results.
+    Returns a list of strings containing each command issued in sequence.
+    """
 
     # Iterate over the user-supplied checks
-    for chk in checks[0].result["checks"]:
+    for chk in load_ar[task.host.name][1].result["checks"]:
 
         # If dryrun, use the mock task (regression testing only)
         if dryrun:
@@ -71,8 +224,7 @@ def _get_cmd(chk):
     # Protocol is an uncommon protocol specified numerically
     else:
         cmd += (
-            f"{chk['in_intf']} {chk['proto']} "
-            f"{chk['src_ip']} {chk['dst_ip']} "
+            f"{chk['in_intf']} {chk['proto']} " f"{chk['src_ip']} {chk['dst_ip']} "
         )
 
     # Append "xml" to the command string to specify XML output format

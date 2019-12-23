@@ -10,20 +10,20 @@ import json
 import xmltodict
 
 
-def _style_json(aresult, failonly):
+def _style_json(load_ar, run_ar, failonly):
     """
     Prints the result in JSON format which includes the user-specified
     name and overall test result.
     """
     root_dict = {}
     overall_success = True
-    for host, mresult in aresult.items():
-        checks = mresult[1].result["checks"]
+    for (host, load_mr), run_mr in zip(load_ar.items(), run_ar.values()):
+        checks = load_mr[1].result["checks"]
         host_dict = {}
 
         # Iterate over the list of checks (input) and the corresponding
         # netmiko results (output)
-        for chk, output in zip(checks, mresult[2:]):
+        for chk, output in zip(checks, run_mr[1:]):
 
             # Convert from XML to Python objects, using the check id
             # hostname as the topmost key. Spaces in the check ids are
@@ -37,13 +37,15 @@ def _style_json(aresult, failonly):
             if not success:
                 overall_success = False
 
-        root_dict.update({host: host_dict})
+            # Only add a host-specific dict if it contains something
+            if len(host_dict) > 0:
+                root_dict.update({host: host_dict})
 
     print(json.dumps(root_dict, indent=2))
     return overall_success
 
 
-def _style_csv(aresult, failonly):
+def _style_csv(load_ar, run_ar, failonly):
     """
     Prints the result in CSV format which includes the user-specified
     id and overall test result. The columns are as follows, split into
@@ -56,12 +58,12 @@ def _style_csv(aresult, failonly):
         "dst_port,in_intf,out_intf,action,drop_reason,success"
     )
     overall_success = True
-    for host, mresult in aresult.items():
-        checks = mresult[1].result["checks"]
+    for (host, load_mr), run_mr in zip(load_ar.items(), run_ar.values()):
+        checks = load_mr[1].result["checks"]
 
         # Iterate over the list of checks (input) and the corresponding
         # netmiko results (output)
-        for chk, output in zip(checks, mresult[2:]):
+        for chk, output in zip(checks, run_mr[1:]):
             # Convert from XML to Python objects, using the device
             # hostname as the topmost key
             data = xmltodict.parse(f"<root>{output.result}</root>")
@@ -104,24 +106,20 @@ def _style_csv(aresult, failonly):
     return overall_success
 
 
-def _style_terse(aresult, failonly):
+def _style_terse(load_ar, run_ar, failonly):
     """
     Prints the result in terse format (compressed to one line)
     Example output is shown below:
-      Results for ASAV1:
-       - udp s=192.0.2.1/5000 d=8.8.8.8/53 UNKNOWN->UNKNOWN: DROP
-       - tcp s=192.0.2.1/5000 d=20.0.0.1/443 UNKNOWN->UNKNOWN: DROP
-       + tcp s=20.0.0.1/5000 d=192.0.2.1/22 UNKNOWN->UNKNOWN: DROP
-       + icmp 8/0 s=20.0.0.1 d=192.0.2.1 UNKNOWN->UNKNOWN: DROP
-       + 115 s=192.0.2.1 d=20.0.0.1 UNKNOWN->UNKNOWN: ALLOW
+     ASAV1: DNS OUTBOUND success -> True
+     ASAV1: HTTPS OUTBOUND success -> False
     """
     overall_success = True
-    for host, mresult in aresult.items():
-        checks = mresult[1].result["checks"]
+    for (host, load_mr), run_mr in zip(load_ar.items(), run_ar.values()):
+        checks = load_mr[1].result["checks"]
 
         # Iterate over the list of checks (input) and the corresponding
         # netmiko results (output)
-        for chk, output in zip(checks, mresult[2:]):
+        for chk, output in zip(checks, run_mr[1:]):
             # Convert from XML to Python objects, using the device
             # hostname as the topmost key
             data = xmltodict.parse(f"<root>{output.result}</root>")
@@ -137,7 +135,7 @@ def _style_terse(aresult, failonly):
     return overall_success
 
 
-def process_result(aresult, failonly, style=_style_terse):
+def process_result(run_ar, checks, failonly, style="terse"):
     """
     This function serves as an decision point as it calls other functions
     based on the desired "style". The default style is "terse", and if
@@ -150,5 +148,5 @@ def process_result(aresult, failonly, style=_style_terse):
         "csv": _style_csv,
         "json": _style_json,
     }
-    choice = style_map.get(style, _style_terse)
-    return choice(aresult, failonly)
+    choice = style_map[style]
+    return choice(run_ar, checks, failonly)

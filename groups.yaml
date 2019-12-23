@@ -3,3 +3,4 @@ asa:
   username: "pyuser"
   password: "pypass"
   platform: "cisco_asa"
+...

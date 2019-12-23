@@ -8,7 +8,7 @@ lint:
 	@echo "Starting  lint"
 	find . -name "*.yaml" | xargs yamllint -s
 	find . -name "*.py" | xargs pylint
-	find . -name "*.py" | xargs black -l 80 --check
+	find . -name "*.py" | xargs black -l 85 --check
 	@echo "Completed lint"
 
 .PHONY: dry

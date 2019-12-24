@@ -7,11 +7,10 @@ concurrency, as well as inventory management.
 """
 
 import argparse
-import json
 import sys
 from nornir import InitNornir
 from style import process_result
-from tasks import load_checks, validate_checks, run_checks
+from tasks import run_checks
 
 
 def main(args):
@@ -22,29 +21,22 @@ def main(args):
     # Initialize nornir using default configuration settings
     nornir = InitNornir()
 
-    # Load host variables in, which is a list of dictionaries (checks)
-    load_ar = nornir.run(task=load_checks)
-
-    # Validate the checks by passing in the previous result
-    validate_ar = nornir.run(task=validate_checks, load_ar=load_ar)
-
-    # Check each host to see if any checks were invalid
-    fail_dict = {}
-    for host, validate_mr in validate_ar.items():
-        if len(validate_mr[0].result) > 0:
-            fail_dict.update({host: validate_mr[0].result})
-
-    # If there were any failures, exit with code 1 to signal invalid input
-    if len(fail_dict) > 0:
-        print(json.dumps(fail_dict, indent=2), file=sys.stderr)
-        sys.exit(1)
-
     # All checks are good; execute them by passing in the previous result
-    run_ar = nornir.run(task=run_checks, load_ar=load_ar, dryrun=args.dryrun)
+    aresult = nornir.run(task=run_checks, dryrun=args.dryrun)
+
+    # Handle failed checks by printing them out and exiting with rc=1
+    for host, mresult in aresult.items():
+        if mresult[0].result:
+            print("Error: at least one check is invalid")
+            for chk in mresult[0].result:
+                name = chk["id"] if "id" in chk else "no_id"
+                print(f"{host[:12]:<12} {name[:24]:<24} -> {chk['reason']}")
+            print("Error: at least one check is invalid")
+            sys.exit(1)
 
     # Call the process_result method passing in the nornir AggregatedResult
     # failonly Boolean, and style type
-    overall_success = process_result(load_ar, run_ar, args.failonly, args.style)
+    overall_success = process_result(aresult, args.failonly, args.style)
 
     # If any failures occurred, return code 2 to indicate so
     if not overall_success:

@@ -10,27 +10,30 @@ import json
 import xmltodict
 
 
-def _style_json(load_ar, run_ar, failonly):
+def _style_json(aresult, failonly):
     """
     Prints the result in JSON format which includes the user-specified
     name and overall test result.
     """
     root_dict = {}
     overall_success = True
-    for (host, load_mr), run_mr in zip(load_ar.items(), run_ar.values()):
-        checks = load_mr[1].result["checks"]
+    for host, mresult in aresult.items():
+        checks = mresult[1].result["checks"]
         host_dict = {}
 
         # Iterate over the list of checks (input) and the corresponding
         # netmiko results (output)
-        for chk, output in zip(checks, run_mr[1:]):
+        for chk, output in zip(checks, mresult[2:]):
 
             # Convert from XML to Python objects, using the check id
-            # hostname as the topmost key. Spaces in the check ids are
-            # replaced with underscopes to form proper XML
-            chk_id = chk["id"].replace(" ", "_")
-            data = xmltodict.parse(f"<{chk_id}>{output.result}</{chk_id}>")
-            action = data[chk_id]["result"]["action"]
+            # hostname as the topmost key. Use a dummy key in case the
+            # check id has spaces (which should be honored)
+            # chk_id = chk["id"].replace(" ", "_")
+            data = xmltodict.parse(f"<dummy>{output.result}</dummy>")
+
+            # Replace dummy key with ID (can contain spaces)
+            data[chk["id"]] = data.pop("dummy")
+            action = data[chk["id"]]["result"]["action"]
             success = chk["should"].lower() == action.lower()
             if (not failonly) or (failonly and not success):
                 host_dict.update(data)
@@ -45,7 +48,7 @@ def _style_json(load_ar, run_ar, failonly):
     return overall_success
 
 
-def _style_csv(load_ar, run_ar, failonly):
+def _style_csv(aresult, failonly):
     """
     Prints the result in CSV format which includes the user-specified
     id and overall test result. The columns are as follows, split into
@@ -58,12 +61,12 @@ def _style_csv(load_ar, run_ar, failonly):
         "dst_port,in_intf,out_intf,action,drop_reason,success"
     )
     overall_success = True
-    for (host, load_mr), run_mr in zip(load_ar.items(), run_ar.values()):
-        checks = load_mr[1].result["checks"]
+    for host, mresult in aresult.items():
+        checks = mresult[1].result["checks"]
 
         # Iterate over the list of checks (input) and the corresponding
         # netmiko results (output)
-        for chk, output in zip(checks, run_mr[1:]):
+        for chk, output in zip(checks, mresult[2:]):
             # Convert from XML to Python objects, using the device
             # hostname as the topmost key
             data = xmltodict.parse(f"<root>{output.result}</root>")
@@ -106,7 +109,7 @@ def _style_csv(load_ar, run_ar, failonly):
     return overall_success
 
 
-def _style_terse(load_ar, run_ar, failonly):
+def _style_terse(aresult, failonly):
     """
     Prints the result in terse format (compressed to one line)
     Example output is shown below:
@@ -114,12 +117,12 @@ def _style_terse(load_ar, run_ar, failonly):
      ASAV1: HTTPS OUTBOUND success -> False
     """
     overall_success = True
-    for (host, load_mr), run_mr in zip(load_ar.items(), run_ar.values()):
-        checks = load_mr[1].result["checks"]
+    for host, mresult in aresult.items():
+        checks = mresult[1].result["checks"]
 
         # Iterate over the list of checks (input) and the corresponding
         # netmiko results (output)
-        for chk, output in zip(checks, run_mr[1:]):
+        for chk, output in zip(checks, mresult[2:]):
             # Convert from XML to Python objects, using the device
             # hostname as the topmost key
             data = xmltodict.parse(f"<root>{output.result}</root>")
@@ -127,7 +130,8 @@ def _style_terse(load_ar, run_ar, failonly):
             success = chk["should"].lower() == action.lower()
 
             if (not failonly) or (failonly and not success):
-                print(f"{host}: {chk['id']} success -> {success}")
+                passfail = "PASS" if success else "FAIL"
+                print(f"{host[:12]:<12} {chk['id'][:24]:<24} -> {passfail}")
 
             if not success:
                 overall_success = False
@@ -135,7 +139,7 @@ def _style_terse(load_ar, run_ar, failonly):
     return overall_success
 
 
-def process_result(run_ar, checks, failonly, style="terse"):
+def process_result(aresult, failonly, style="terse"):
     """
     This function serves as an decision point as it calls other functions
     based on the desired "style". The default style is "terse", and if
@@ -149,4 +153,4 @@ def process_result(run_ar, checks, failonly, style="terse"):
         "json": _style_json,
     }
     choice = style_map[style]
-    return choice(run_ar, checks, failonly)
+    return choice(aresult, failonly)

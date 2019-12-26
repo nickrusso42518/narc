@@ -207,25 +207,31 @@ def get_cmd(chk):
     """
 
     proto = str(chk["proto"]).lower()
-    cmd = f"packet-tracer input {chk['in_intf']} {chk['proto']} "
+    cmd = f"packet-tracer input {chk['in_intf']} "
 
     # Check for TCP (6) or UDP (17)
     if proto in ["tcp", "6", "udp", "17"]:
+        proto_map = {
+            "6": "tcp",
+            "tcp": "tcp",
+            "17": "udp",
+            "udp": "udp",
+        }
         cmd += (
-            f"{chk['src_ip']} {chk['src_port']} "
+            f"{proto_map[proto]} {chk['src_ip']} {chk['src_port']} "
             f"{chk['dst_ip']} {chk['dst_port']} "
         )
 
     # Check for ICMP (1)
     elif proto in ["icmp", "1"]:
         cmd += (
-            f"{chk['src_ip']} {chk['icmp_type']} "
+            f"icmp {chk['src_ip']} {chk['icmp_type']} "
             f"{chk['icmp_code']} {chk['dst_ip']} "
         )
 
     # Protocol is an uncommon protocol specified numerically
     else:
-        cmd += f"{chk['src_ip']} {chk['dst_ip']} "
+        cmd += f"{chk['proto']} {chk['src_ip']} {chk['dst_ip']} "
 
     # Append "xml" to the command string to specify XML output format
     return cmd + "xml"

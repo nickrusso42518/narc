@@ -6,3 +6,4 @@ Purpose: Define custom Nornir tasks for use with the main runbook.
 """
 
 from tests.test_validation import *
+from tests.test_get_cmd import *

@@ -10,8 +10,9 @@ install:
 # Perform pre-checks
 before_script:
   - "make lint"
+  - "make unit"
 
 # Perform runbook testing with mock ASA inputs.
 script:
-  - "make test"
+  - "make dry"
 ...

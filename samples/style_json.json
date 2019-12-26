@@ -1,0 +1,812 @@
+{
+  "ASAV1": {
+    "DNS OUTBOUND": {
+      "Phase": [
+        {
+          "id": "1",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 172.31.80.1 using egress ifc  management"
+        },
+        {
+          "id": "2",
+          "type": "ACCESS-LIST",
+          "subtype": "log",
+          "result": "ALLOW",
+          "config": "access-group ACL_INSIDE in interface inside\naccess-list ACL_INSIDE extended permit udp any any",
+          "extra": null
+        },
+        {
+          "id": "3",
+          "type": "NAT",
+          "subtype": "per-session",
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "4",
+          "type": "IP-OPTIONS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "5",
+          "type": "QOS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "6",
+          "type": "QOS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "7",
+          "type": "NAT",
+          "subtype": "per-session",
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "8",
+          "type": "IP-OPTIONS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "9",
+          "type": "FLOW-CREATION",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": "New flow created with id 58, packet dispatched to next module"
+        },
+        {
+          "id": "10",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 172.31.80.1 using egress ifc  management"
+        },
+        {
+          "id": "11",
+          "type": "ADJACENCY-LOOKUP",
+          "subtype": "next-hop and adjacency",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "adjacency Active\nnext-hop mac address 121d.d261.f602 hits 0 reference 1"
+        }
+      ],
+      "result": {
+        "input-interface": "UNKNOWN",
+        "input-status": "up",
+        "input-line-status": "up",
+        "output-interface": "UNKNOWN",
+        "output-status": "up",
+        "output-line-status": "up",
+        "action": "allow"
+      }
+    },
+    "HTTPS OUTBOUND": {
+      "Phase": [
+        {
+          "id": "1",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 172.31.80.1 using egress ifc  management"
+        },
+        {
+          "id": "2",
+          "type": "ACCESS-LIST",
+          "subtype": "log",
+          "result": "ALLOW",
+          "config": "access-group ACL_INSIDE in interface inside\naccess-list ACL_INSIDE extended permit tcp any any",
+          "extra": null
+        },
+        {
+          "id": "3",
+          "type": "NAT",
+          "subtype": "per-session",
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "4",
+          "type": "IP-OPTIONS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "5",
+          "type": "QOS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "6",
+          "type": "QOS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "7",
+          "type": "NAT",
+          "subtype": "per-session",
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "8",
+          "type": "IP-OPTIONS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "9",
+          "type": "FLOW-CREATION",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": "New flow created with id 59, packet dispatched to next module"
+        },
+        {
+          "id": "10",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 172.31.80.1 using egress ifc  management"
+        },
+        {
+          "id": "11",
+          "type": "ADJACENCY-LOOKUP",
+          "subtype": "next-hop and adjacency",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "adjacency Active\nnext-hop mac address 121d.d261.f602 hits 1 reference 1"
+        }
+      ],
+      "result": {
+        "input-interface": "UNKNOWN",
+        "input-status": "up",
+        "input-line-status": "up",
+        "output-interface": "UNKNOWN",
+        "output-status": "up",
+        "output-line-status": "up",
+        "action": "allow"
+      }
+    },
+    "SSH INBOUND": {
+      "Phase": [
+        {
+          "id": "1",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 192.0.2.2 using egress ifc  inside"
+        },
+        {
+          "id": "2",
+          "type": "ACCESS-LIST",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": "Implicit Rule",
+          "extra": null
+        },
+        {
+          "id": "3",
+          "type": "NAT",
+          "subtype": "per-session",
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "4",
+          "type": "IP-OPTIONS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "5",
+          "type": "QOS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "6",
+          "type": "ACCESS-LIST",
+          "subtype": "log",
+          "result": "DROP",
+          "config": "access-group ACL_MGMT out interface inside\naccess-list ACL_MGMT extended deny ip any any log",
+          "extra": null
+        }
+      ],
+      "result": {
+        "input-interface": "UNKNOWN",
+        "input-status": "up",
+        "input-line-status": "up",
+        "output-interface": "UNKNOWN",
+        "output-status": "up",
+        "output-line-status": "up",
+        "action": "drop",
+        "drop-reason": "(acl-drop) Flow is denied by configured rule"
+      }
+    },
+    "PING OUTBOUND": {
+      "Phase": [
+        {
+          "id": "1",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 172.31.80.1 using egress ifc  management"
+        },
+        {
+          "id": "2",
+          "type": "ACCESS-LIST",
+          "subtype": "log",
+          "result": "ALLOW",
+          "config": "access-group ACL_INSIDE in interface inside\naccess-list ACL_INSIDE extended permit icmp any any",
+          "extra": null
+        },
+        {
+          "id": "3",
+          "type": "NAT",
+          "subtype": "per-session",
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "4",
+          "type": "IP-OPTIONS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "5",
+          "type": "QOS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "6",
+          "type": "INSPECT",
+          "subtype": "np-inspect",
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "7",
+          "type": "FLOW-CREATION",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": "New flow created with id 61, packet dispatched to next module"
+        },
+        {
+          "id": "8",
+          "type": "ACCESS-LIST",
+          "subtype": "log",
+          "result": "ALLOW",
+          "config": "access-group ACL_INSIDE in interface inside\naccess-list ACL_INSIDE extended permit icmp any any",
+          "extra": null
+        },
+        {
+          "id": "9",
+          "type": "NAT",
+          "subtype": "per-session",
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "10",
+          "type": "IP-OPTIONS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "11",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 172.31.80.1 using egress ifc  management"
+        },
+        {
+          "id": "12",
+          "type": "ADJACENCY-LOOKUP",
+          "subtype": "next-hop and adjacency",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "adjacency Active\nnext-hop mac address 121d.d261.f602 hits 2 reference 1"
+        }
+      ],
+      "result": {
+        "input-interface": "UNKNOWN",
+        "input-status": "up",
+        "input-line-status": "up",
+        "output-interface": "UNKNOWN",
+        "output-status": "up",
+        "output-line-status": "up",
+        "action": "allow"
+      }
+    },
+    "L2TP OUTBOUND": {
+      "Phase": [
+        {
+          "id": "1",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 172.31.80.1 using egress ifc  management"
+        },
+        {
+          "id": "2",
+          "type": "ACCESS-LIST",
+          "subtype": null,
+          "result": "DROP",
+          "config": "Implicit Rule",
+          "extra": null
+        }
+      ],
+      "result": {
+        "input-interface": "UNKNOWN",
+        "input-status": "up",
+        "input-line-status": "up",
+        "output-interface": "UNKNOWN",
+        "output-status": "up",
+        "output-line-status": "up",
+        "action": "drop",
+        "drop-reason": "(acl-drop) Flow is denied by configured rule"
+      }
+    }
+  },
+  "ASAV2": {
+    "DNS OUTBOUND": {
+      "Phase": [
+        {
+          "id": "1",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 172.31.80.1 using egress ifc  management"
+        },
+        {
+          "id": "2",
+          "type": "ACCESS-LIST",
+          "subtype": "log",
+          "result": "ALLOW",
+          "config": "access-group ACL_INSIDE in interface inside\naccess-list ACL_INSIDE extended permit udp any any",
+          "extra": null
+        },
+        {
+          "id": "3",
+          "type": "NAT",
+          "subtype": "per-session",
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "4",
+          "type": "IP-OPTIONS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "5",
+          "type": "QOS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "6",
+          "type": "QOS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "7",
+          "type": "NAT",
+          "subtype": "per-session",
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "8",
+          "type": "IP-OPTIONS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "9",
+          "type": "FLOW-CREATION",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": "New flow created with id 19, packet dispatched to next module"
+        },
+        {
+          "id": "10",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 172.31.80.1 using egress ifc  management"
+        },
+        {
+          "id": "11",
+          "type": "ADJACENCY-LOOKUP",
+          "subtype": "next-hop and adjacency",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "adjacency Active\nnext-hop mac address 121d.d261.f602 hits 0 reference 1"
+        }
+      ],
+      "result": {
+        "input-interface": "UNKNOWN",
+        "input-status": "up",
+        "input-line-status": "up",
+        "output-interface": "UNKNOWN",
+        "output-status": "up",
+        "output-line-status": "up",
+        "action": "allow"
+      }
+    },
+    "HTTPS OUTBOUND": {
+      "Phase": [
+        {
+          "id": "1",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 172.31.80.1 using egress ifc  management"
+        },
+        {
+          "id": "2",
+          "type": "ACCESS-LIST",
+          "subtype": "log",
+          "result": "ALLOW",
+          "config": "access-group ACL_INSIDE in interface inside\naccess-list ACL_INSIDE extended permit tcp any any",
+          "extra": null
+        },
+        {
+          "id": "3",
+          "type": "NAT",
+          "subtype": "per-session",
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "4",
+          "type": "IP-OPTIONS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "5",
+          "type": "QOS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "6",
+          "type": "QOS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "7",
+          "type": "NAT",
+          "subtype": "per-session",
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "8",
+          "type": "IP-OPTIONS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "9",
+          "type": "FLOW-CREATION",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": "New flow created with id 20, packet dispatched to next module"
+        },
+        {
+          "id": "10",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 172.31.80.1 using egress ifc  management"
+        },
+        {
+          "id": "11",
+          "type": "ADJACENCY-LOOKUP",
+          "subtype": "next-hop and adjacency",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "adjacency Active\nnext-hop mac address 121d.d261.f602 hits 1 reference 1"
+        }
+      ],
+      "result": {
+        "input-interface": "UNKNOWN",
+        "input-status": "up",
+        "input-line-status": "up",
+        "output-interface": "UNKNOWN",
+        "output-status": "up",
+        "output-line-status": "up",
+        "action": "allow"
+      }
+    },
+    "SSH INBOUND": {
+      "Phase": [
+        {
+          "id": "1",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 203.0.113.2 using egress ifc  inside"
+        },
+        {
+          "id": "2",
+          "type": "ACCESS-LIST",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": "Implicit Rule",
+          "extra": null
+        },
+        {
+          "id": "3",
+          "type": "NAT",
+          "subtype": "per-session",
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "4",
+          "type": "IP-OPTIONS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "5",
+          "type": "QOS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "6",
+          "type": "ACCESS-LIST",
+          "subtype": "log",
+          "result": "DROP",
+          "config": "access-group ACL_MGMT out interface inside\naccess-list ACL_MGMT extended deny ip any any log",
+          "extra": null
+        }
+      ],
+      "result": {
+        "input-interface": "UNKNOWN",
+        "input-status": "up",
+        "input-line-status": "up",
+        "output-interface": "UNKNOWN",
+        "output-status": "up",
+        "output-line-status": "up",
+        "action": "drop",
+        "drop-reason": "(acl-drop) Flow is denied by configured rule"
+      }
+    },
+    "PING OUTBOUND": {
+      "Phase": [
+        {
+          "id": "1",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 172.31.80.1 using egress ifc  management"
+        },
+        {
+          "id": "2",
+          "type": "ACCESS-LIST",
+          "subtype": "log",
+          "result": "ALLOW",
+          "config": "access-group ACL_INSIDE in interface inside\naccess-list ACL_INSIDE extended permit icmp any any",
+          "extra": null
+        },
+        {
+          "id": "3",
+          "type": "NAT",
+          "subtype": "per-session",
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "4",
+          "type": "IP-OPTIONS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "5",
+          "type": "QOS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "6",
+          "type": "INSPECT",
+          "subtype": "np-inspect",
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "7",
+          "type": "FLOW-CREATION",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": "New flow created with id 22, packet dispatched to next module"
+        },
+        {
+          "id": "8",
+          "type": "ACCESS-LIST",
+          "subtype": "log",
+          "result": "ALLOW",
+          "config": "access-group ACL_INSIDE in interface inside\naccess-list ACL_INSIDE extended permit icmp any any",
+          "extra": null
+        },
+        {
+          "id": "9",
+          "type": "NAT",
+          "subtype": "per-session",
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "10",
+          "type": "IP-OPTIONS",
+          "subtype": null,
+          "result": "ALLOW",
+          "config": null,
+          "extra": null
+        },
+        {
+          "id": "11",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 172.31.80.1 using egress ifc  management"
+        },
+        {
+          "id": "12",
+          "type": "ADJACENCY-LOOKUP",
+          "subtype": "next-hop and adjacency",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "adjacency Active\nnext-hop mac address 121d.d261.f602 hits 2 reference 1"
+        }
+      ],
+      "result": {
+        "input-interface": "UNKNOWN",
+        "input-status": "up",
+        "input-line-status": "up",
+        "output-interface": "UNKNOWN",
+        "output-status": "up",
+        "output-line-status": "up",
+        "action": "allow"
+      }
+    },
+    "L2TP OUTBOUND": {
+      "Phase": [
+        {
+          "id": "1",
+          "type": "ROUTE-LOOKUP",
+          "subtype": "Resolve Egress Interface",
+          "result": "ALLOW",
+          "config": null,
+          "extra": "found next-hop 172.31.80.1 using egress ifc  management"
+        },
+        {
+          "id": "2",
+          "type": "ACCESS-LIST",
+          "subtype": "log",
+          "result": "DROP",
+          "config": "access-group ACL_INSIDE in interface inside\naccess-list ACL_INSIDE extended deny ip any any log",
+          "extra": null
+        }
+      ],
+      "result": {
+        "input-interface": "UNKNOWN",
+        "input-status": "up",
+        "input-line-status": "up",
+        "output-interface": "UNKNOWN",
+        "output-status": "up",
+        "output-line-status": "up",
+        "action": "drop",
+        "drop-reason": "(acl-drop) Flow is denied by configured rule"
+      }
+    }
+  }
+}

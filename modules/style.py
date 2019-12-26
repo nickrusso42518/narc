@@ -77,15 +77,15 @@ def _style_csv(aresult, failonly):
                 proto = str(chk["proto"]).lower()
                 text = f"{host},{chk['id']},{chk['proto']},"
 
-                # Check for TCP (6) or UDP (17)
-                if proto in ["tcp", "6", "udp", "17"]:
+                # Check for TCP or UDP
+                if proto in ["tcp", "udp"]:
                     text += (
                         f",,{chk['src_ip']},{chk['src_port']},"
                         f"{chk['dst_ip']},{chk['dst_port']},"
                     )
 
-                # Check for ICMP (1)
-                elif proto in ["icmp", "1"]:
+                # Check for ICMP
+                elif proto == "icmp":
                     text += (
                         f"{chk['icmp_type']},{chk['icmp_code']},"
                         f"{chk['src_ip']},,{chk['dst_ip']},,"

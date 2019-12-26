@@ -1,4 +1,10 @@
-Results for ASAV1:
- - udp s=192.0.2.1/5000 d=8.8.8.8/53 UNKNOWN->UNKNOWN: drop
- - tcp s=192.0.2.1/5000 d=20.0.0.1/443 UNKNOWN->UNKNOWN: drop
- + tcp s=20.0.0.1/5000 d=192.0.2.1/22 UNKNOWN->UNKNOWN: drop
+ASAV1        DNS OUTBOUND             -> FAIL
+ASAV1        HTTPS OUTBOUND           -> PASS
+ASAV1        SSH INBOUND              -> PASS
+ASAV1        PING OUTBOUND            -> PASS
+ASAV1        L2TP OUTBOUND            -> PASS
+ASAV2        DNS OUTBOUND             -> PASS
+ASAV2        HTTPS OUTBOUND           -> FAIL
+ASAV2        SSH INBOUND              -> PASS
+ASAV2        PING OUTBOUND            -> PASS
+ASAV2        L2TP OUTBOUND            -> PASS

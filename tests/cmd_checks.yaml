@@ -1,48 +1,27 @@
 ---
 cmd_checks:
-  tcp_str:
+  tcp_full:
     in_intf: "inside"
     proto: "tcp"
     src_ip: "192.0.2.1"
     src_port: 5001
     dst_ip: "192.0.2.2"
     dst_port: 5002
-  tcp_int:
-    in_intf: "inside"
-    proto: 6
-    src_ip: "192.0.2.1"
-    src_port: 5001
-    dst_ip: "192.0.2.2"
-    dst_port: 5002
-  udp_str:
+  udp_full:
     in_intf: "inside"
     proto: "udp"
     src_ip: "192.0.2.1"
     src_port: 5001
     dst_ip: "192.0.2.2"
     dst_port: 5002
-  udp_int:
-    in_intf: "inside"
-    proto: 17
-    src_ip: "192.0.2.1"
-    src_port: 5001
-    dst_ip: "192.0.2.2"
-    dst_port: 5002
-  icmp_str:
+  icmp_full:
     in_intf: "inside"
     proto: "icmp"
     src_ip: "192.0.2.1"
     dst_ip: "192.0.2.2"
     icmp_type: 8
     icmp_code: 0
-  icmp_int:
-    in_intf: "inside"
-    proto: 1
-    src_ip: "192.0.2.1"
-    dst_ip: "192.0.2.2"
-    icmp_type: 8
-    icmp_code: 0
-  other_int:
+  rawip_full:
     in_intf: "inside"
     proto: 123
     src_ip: "192.0.2.1"

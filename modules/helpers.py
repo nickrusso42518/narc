@@ -21,50 +21,66 @@ def validate_checks(checks):
     for chk in checks:
 
         # Validate various fields for correctness
-        if not _validate_id(chk, fail_list):
+        if not validate_id(chk, fail_list):
             continue
 
-        if not _validate_in_intf(chk, fail_list):
+        if not validate_in_intf(chk, fail_list):
             continue
 
-        if not _validate_should(chk, fail_list):
+        if not validate_should(chk, fail_list):
             continue
 
-        if not _validate_ip(chk, fail_list):
+        if not validate_ip(chk, fail_list):
             continue
 
-        if not _validate_proto(chk, fail_list):
+        if not validate_proto(chk, fail_list):
             continue
 
         # If proto is tcp/udp, check src/dst port
         if chk["proto"] in ["tcp", "6", "udp", "17"]:
-            if not _validate_port(chk, fail_list):
+            if not validate_port(chk, fail_list):
                 continue
 
         # If proto is icmp check type/code
         if chk["proto"] in ["icmp", "1"]:
-            if not _validate_icmp(chk, fail_list):
+            if not validate_icmp(chk, fail_list):
                 continue
 
     # Return list of all failures; empty list means success
     return fail_list
 
 
-def _validate_id(chk, fail_list):
+def validate_id(chk, fail_list):
+    """
+    Ensure the "id" key in the "check" dictionary is present
+    and valid. Return False if any condition is not satisfied
+    and also append the check to the fail_list with a fail reason.
+    """
     if not "id" in chk or not chk["id"]:
         _fail_check(chk, fail_list, "'id' key missing or false-y")
         return False
     return True
 
 
-def _validate_in_intf(chk, fail_list):
+def validate_in_intf(chk, fail_list):
+    """
+    Ensure the "in_intf" key in the "check" dictionary is present
+    and valid. Return False if any condition is not satisfied
+    and also append the check to the fail_list with a fail reason.
+    """
     if not "in_intf" in chk or not chk["in_intf"]:
         _fail_check(chk, fail_list, "'in_intf' key missing or false-y")
         return False
     return True
 
 
-def _validate_ip(chk, fail_list):
+def validate_ip(chk, fail_list):
+    """
+    Ensure the "src_ip" and "dst_ip" keys in the "check" dictionary are
+    present and valid. Must be properly formatted IPv4 or IPv6 address for
+    both source and dest IPs. Return False if any condition is not satisfied
+    and also append the check to the fail_list with a fail reason.
+    """
     ip_list = []
     for ip_key in ["src_ip", "dst_ip"]:
         if not ip_key in chk:
@@ -80,17 +96,36 @@ def _validate_ip(chk, fail_list):
     if ip_list[0].version != ip_list[1].version:
         _fail_check(chk, fail_list, "src/dst ip version mismatch (v4 or v6)")
         return False
-    return True
 
-
-def _validate_should(chk, fail_list):
-    if not "should" in chk or chk["should"].lower() not in ["allow", "drop"]:
-        _fail_check(chk, fail_list, "'should' key missing or isn't allow/drop")
+    if ip_list[0] == ip_list[1]:
+        _fail_check(chk, fail_list, "src/dst ip cannot be the same addr")
         return False
     return True
 
 
-def _validate_proto(chk, fail_list):
+def validate_should(chk, fail_list):
+    """
+    Ensure the "should" key in the "check" dictionary is
+    present and valid. Must be "allow" or "drop"; no other value.
+    Return False if any condition is not satisfied
+    and also append the check to the fail_list with a fail reason.
+    """
+    if not "should" in chk:
+        _fail_check(chk, fail_list, "'should' key missing")
+        return False
+    if chk["should"].lower() not in ["allow", "drop"]:
+        _fail_check(chk, fail_list, "'should' value must be allow|drop")
+        return False
+    return True
+
+
+def validate_proto(chk, fail_list):
+    """
+    Ensure the "should" key in the "check" dictionary is
+    present and valid. Must be "tcp", "udp", or "icmp" as a string,
+    or an integer 0-255. Return False if any condition is not satisfied
+    and also append the check to the fail_list with a fail reason.
+    """
     if not "proto" in chk or not chk["proto"]:
         _fail_check(chk, fail_list, "'proto' key missing")
         return False
@@ -110,7 +145,13 @@ def _validate_proto(chk, fail_list):
     return True
 
 
-def _validate_port(chk, fail_list):
+def validate_port(chk, fail_list):
+    """
+    Ensure the "src_port" and "dst_port" keys in the "check" dictionary are
+    present and valid. Must be integers between 0 and 65535; relevant only for
+    TCP or UDP checks. Return False if any condition is not satisfied
+    and also append the check to the fail_list with a fail reason.
+    """
     for key in ["src_port", "dst_port"]:
         if key not in chk:
             _fail_check(chk, fail_list, f"missing tcp/udp '{key}' key")
@@ -126,7 +167,13 @@ def _validate_port(chk, fail_list):
     return True
 
 
-def _validate_icmp(chk, fail_list):
+def validate_icmp(chk, fail_list):
+    """
+    Ensure the "icmp_type" and "icmp_code" keys in the "check" dictionary are
+    present and valid. Must be integers between 0 and 255; relevant only for
+    ICMP checks. Return False if any condition is not satisfied
+    and also append the check to the fail_list with a fail reason.
+    """
     for key in ["icmp_type", "icmp_code"]:
         if key not in chk:
             _fail_check(chk, fail_list, f"missing icmp '{key}' key")
@@ -143,6 +190,10 @@ def _validate_icmp(chk, fail_list):
 
 
 def _fail_check(chk, fail_list, reason):
+    """
+    Small internal wrapper function that updates the given check with
+    the failure "reason" and appends it to the supplied fail_list".
+    """
     chk.update({"reason": reason})
     fail_list.append(chk)
 

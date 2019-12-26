@@ -9,8 +9,8 @@ concurrency, as well as inventory management.
 import argparse
 import sys
 from nornir import InitNornir
-from style import process_result
-from tasks import run_checks
+from modules.style import process_result
+from modules.tasks import run_checks
 
 
 def main(args):

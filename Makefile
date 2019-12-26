@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := test
 
 .PHONY: test
-test: clean lint dry
+test: clean lint unit dry
 
 .PHONY: lint
 lint:
@@ -10,6 +10,12 @@ lint:
 	find . -name "*.py" | xargs pylint
 	find . -name "*.py" | xargs black -l 85 --check
 	@echo "Completed lint"
+
+.PHONY: unit
+unit:
+	@echo "Starting  unit tests"
+	pytest --verbose test_unit.py
+	@echo "Completed unit tests"
 
 .PHONY: dry
 dry:
@@ -23,6 +29,6 @@ dry:
 .PHONY: clean
 clean:
 	@echo "Starting  clean"
-	rm -rf __pycache__
+	find . -name "*.pyc" | xargs -r rm
 	rm -f nornir.log
 	@echo "Starting  clean"

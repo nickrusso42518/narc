@@ -1,6 +1,7 @@
 nornir
 xmltodict
 yamllint
+pytest
 pylint
 argparse
 black

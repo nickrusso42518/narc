@@ -18,11 +18,15 @@ def validate_checks(checks):
     """
 
     fail_list = []
+    unique_id_set = set()
     for chk in checks:
 
         # Validate various fields for correctness
         if not validate_id(chk, fail_list):
             continue
+
+        # The 'id' is known good; add to a set
+        unique_id_set.add(chk["id"])
 
         if not validate_in_intf(chk, fail_list):
             continue
@@ -45,6 +49,10 @@ def validate_checks(checks):
         if chk["proto"] in ["icmp", "1"]:
             if not validate_icmp(chk, fail_list):
                 continue
+
+    # Finally, ensure there are no duplicate IDs
+    if len(unique_id_set) < len(checks):
+        _fail_check(checks[0], fail_list, "found duplicate id; review all checks")
 
     # Return list of all failures; empty list means success
     return fail_list

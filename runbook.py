@@ -25,14 +25,17 @@ def main(args):
     aresult = nornir.run(task=run_checks, args=args)
 
     # Handle failed checks by printing them out and exiting with rc=1
+    failed = False
     for host, mresult in aresult.items():
         if mresult[0].result:
-            print("Error: at least one check is invalid")
+            print(f"{host} error: at least one check is invalid")
             for chk in mresult[0].result:
                 name = chk.get("id", "no_id")
                 print(f"{host[:12]:<12} {name[:24]:<24} -> {chk['reason']}")
-            print("Error: at least one check is invalid")
-            sys.exit(1)
+            failed = True
+
+    if failed:
+        sys.exit(1)
 
 
 if __name__ == "__main__":

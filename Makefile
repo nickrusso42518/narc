@@ -1,8 +1,7 @@
 .DEFAULT_GOAL := test
 
 .PHONY: test
-#test: clean lint unit dry
-test: clean unit dry
+test: clean lint unit dry
 
 .PHONY: lint
 lint:

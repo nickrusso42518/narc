@@ -1,11 +1,43 @@
+#!/usr/bin/env python
+
+"""
+Author: Nick Russo
+Purpose: A concrete processor that stores the packet-tracer
+results in a terse, text-based format.
+"""
+
 import xmltodict
 from narc.processors.proc_base import ProcBase
 
+
 class ProcTerse(ProcBase):
+    """
+    Represents a processor object, inheriting from ProcBase,
+    for the terse, text-based format.
+    """
+
     def __init__(self):
+        """
+        Constructor initializes an empty string to hold
+        the results.
+        """
         self.text = ""
 
+    def task_completed(self, task, aresult):
+        """
+        After the task is completed for all hosts, write the text
+        data to an output file.
+        """
+        super().task_completed(task, aresult)
+        with open("outputs/result.txt", "w") as handle:
+            handle.write(self.text)
+
     def task_instance_completed(self, task, host, mresult):
+        """
+        When each host finishes running the task, assemble
+        the text output based on the results, and append them to
+        the text string for use later.
+        """
         checks = mresult[1].result["checks"]
         failonly = task.params["args"].failonly
 
@@ -23,8 +55,3 @@ class ProcTerse(ProcBase):
                 output = f"{host.name[:12]:<12} {chk['id'][:24]:<24} -> {status}"
                 self.text += output + "\n"
                 print(output)
-
-    def task_completed(self, task, aresult):
-        super().task_completed(task, aresult)
-        with open("outputs/result.txt", "w") as handle:
-            handle.write(self.text)

@@ -15,7 +15,7 @@ def cmd_checks():
     """
     Test fixture setup to load in the relevant test data
     """
-    with open("tests/cmd_checks.yaml", "r") as handle:
+    with open("tests/data/cmd_checks.yaml", "r") as handle:
         checks = yaml.safe_load(handle)
     return checks["cmd_checks"]
 

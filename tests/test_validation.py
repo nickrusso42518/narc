@@ -15,7 +15,7 @@ def dummy_checks():
     """
     Test fixture setup to create dummy 'checks' list
     """
-    with open("tests/dummy_checks.yaml", "r") as handle:
+    with open("tests/data/dummy_checks.yaml", "r") as handle:
         checks = yaml.safe_load(handle)
     return checks["dummy_checks"]
 

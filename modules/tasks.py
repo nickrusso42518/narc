@@ -11,7 +11,7 @@ from nornir.plugins.tasks.data import load_json, load_yaml
 from modules.helpers import validate_checks, get_cmd
 
 
-def run_checks(task, dryrun):
+def run_checks(task, args):
     """
     Loads in host-specific variables, assembles proper 'packet-tracer'
     commands, issues them to the Cisco ASAs via netmiko, and record results.
@@ -30,7 +30,7 @@ def run_checks(task, dryrun):
     for chk in checks:
 
         # If dryrun, use the mock task (regression testing only)
-        if dryrun:
+        if args.dryrun:
             task.run(task=_mock_packet_trace, chk=chk)
 
         # Else, it's a live run, assemble the packet-tracer command

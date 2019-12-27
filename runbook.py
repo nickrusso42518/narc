@@ -12,6 +12,7 @@ from nornir import InitNornir
 from modules.style import process_result
 from modules.tasks import run_checks
 
+from proc_terse import ProcTerse, ProcCSV, ProcJSON
 
 def main(args):
     """
@@ -19,24 +20,35 @@ def main(args):
     """
 
     # Initialize nornir using default configuration settings
-    nornir = InitNornir()
+    init_nornir = InitNornir()
+
+    data = {}
+    style_map = {
+        "terse": ProcTerse(),
+        "csv": ProcCSV(),
+        "json": ProcJSON(data),
+    }
+    proc = style_map.get(args.style, ProcTerse())
+    nornir = init_nornir.with_processors([proc])
+    
 
     # All checks are good; execute them by passing in the previous result
-    aresult = nornir.run(task=run_checks, dryrun=args.dryrun)
+    aresult = nornir.run(task=run_checks, args=args)
 
     # Handle failed checks by printing them out and exiting with rc=1
     for host, mresult in aresult.items():
         if mresult[0].result:
             print("Error: at least one check is invalid")
             for chk in mresult[0].result:
-                name = chk["id"] if "id" in chk else "no_id"
+                name = chk.get("id", "no_id")
                 print(f"{host[:12]:<12} {name[:24]:<24} -> {chk['reason']}")
             print("Error: at least one check is invalid")
             sys.exit(1)
 
     # Call the process_result method passing in the nornir AggregatedResult
     # failonly Boolean, and style type
-    overall_success = process_result(aresult, args.failonly, args.style)
+    #overall_success = process_result(aresult, args.failonly, args.style)
+    overall_success = True
 
     # If any failures occurred, return code 2 to indicate so
     if not overall_success:

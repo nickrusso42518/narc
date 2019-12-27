@@ -21,16 +21,7 @@ def main(args):
 
     # Initialize nornir using default configuration settings
     init_nornir = InitNornir()
-
-    data = {}
-    style_map = {
-        "terse": ProcTerse(),
-        "csv": ProcCSV(),
-        "json": ProcJSON(data),
-    }
-    proc = style_map.get(args.style, ProcTerse())
-    nornir = init_nornir.with_processors([proc])
-    
+    nornir = init_nornir.with_processors([ProcTerse(), ProcCSV(), ProcJSON()])
 
     # All checks are good; execute them by passing in the previous result
     aresult = nornir.run(task=run_checks, args=args)

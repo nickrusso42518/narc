@@ -1,9 +1,7 @@
 import xmltodict
+import os
 import json
 class ProcBase:
-    def __init__(self, data=None):
-        self.data = data
-
     def task_started(self, task):
         pass
 
@@ -23,8 +21,16 @@ class ProcBase:
         pass
 
 class ProcJSON(ProcBase):
+    def __init__(self):
+        self.data = {}
+
     def task_completed(self, task, aresult):
-        print(json.dumps(self.data, indent=2))
+        try:
+            os.mkdir("outputs") 
+        except FileExistsError:
+            pass
+        with open("outputs/result.json", "w") as handle:
+            json.dump(self.data, handle, indent=2)
 
     def task_instance_started(self, task, host):
         self.data[host.name] = {}
@@ -52,6 +58,9 @@ class ProcJSON(ProcBase):
 
 
 class ProcTerse(ProcBase):
+    def __init__(self):
+        self.text = ""
+
     def task_instance_completed(self, task, host, mresult):
         checks = mresult[1].result["checks"]
         failonly = task.params["args"].failonly
@@ -67,14 +76,33 @@ class ProcTerse(ProcBase):
 
             if (not failonly) or (failonly and not success):
                 status = "PASS" if success else "FAIL"
-                print(f"{host.name[:12]:<12} {chk['id'][:24]:<24} -> {status}")
+                output = f"{host.name[:12]:<12} {chk['id'][:24]:<24} -> {status}"
+                self.text += output + "\n"
+                print(output)
+
+    def task_completed(self, task, aresult):
+        try:
+            os.mkdir("outputs") 
+        except FileExistsError:
+            pass
+        with open("outputs/result.txt", "w") as handle:
+            handle.write(self.text)
+
 
 class ProcCSV(ProcBase):
-    def task_started(self, task):
-        print(
+    def __init__(self):
+        self.text = (
             "host,id,proto,icmp type,icmp code,src_ip,src_port,dst_ip,"
-            "dst_port,in_intf,out_intf,action,drop_reason,success"
+            "dst_port,in_intf,out_intf,action,drop_reason,success\n"
         )
+
+    def task_completed(self, task, aresult):
+        try:
+            os.mkdir("outputs") 
+        except FileExistsError:
+            pass
+        with open("outputs/result.csv", "w") as handle:
+            handle.write(self.text)
 
     def task_instance_completed(self, task, host, mresult):
         checks = mresult[1].result["checks"]
@@ -117,4 +145,4 @@ class ProcCSV(ProcBase):
                 out_intf = f"{data['root']['result']['output-interface']}"
                 drop_reason = data["root"]["result"].get("drop-reason", "")
                 text += f"{in_intf},{out_intf},{action},{drop_reason},{success}"
-                print(text)
+                self.text += text + "\n"

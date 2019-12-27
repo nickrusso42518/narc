@@ -21,7 +21,7 @@ def main(args):
     init_nornir = InitNornir()
     nornir = init_nornir.with_processors([ProcTerse(), ProcCSV(), ProcJSON()])
 
-    # All checks are good; execute them by passing in the previous result
+    # Execute the "run_checks" task to get started, passing in CLI args
     aresult = nornir.run(task=run_checks, args=args)
 
     # Handle failed checks by printing them out and exiting with rc=1

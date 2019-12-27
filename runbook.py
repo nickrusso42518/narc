@@ -9,10 +9,11 @@ concurrency, as well as inventory management.
 import argparse
 import sys
 from nornir import InitNornir
-from modules.style import process_result
-from modules.tasks import run_checks
+from narc.tasks import run_checks
 
-from proc_terse import ProcTerse, ProcCSV, ProcJSON
+from narc.processors.proc_terse import ProcTerse
+from narc.processors.proc_csv import ProcCSV
+from narc.processors.proc_json import ProcJSON
 
 def main(args):
     """

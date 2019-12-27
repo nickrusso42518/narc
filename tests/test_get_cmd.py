@@ -7,7 +7,7 @@ Purpose: Define unit tests for the helper validation functions.
 
 import pytest
 import yaml
-import modules.helpers as h
+import narc.helpers as h
 
 
 @pytest.fixture(scope="module")

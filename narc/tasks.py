@@ -8,7 +8,7 @@ Purpose: Define custom Nornir tasks for use with the main runbook.
 import os
 from nornir.plugins.tasks.networking import netmiko_send_command
 from nornir.plugins.tasks.data import load_json, load_yaml
-from modules.helpers import validate_checks, get_cmd
+from narc.helpers import validate_checks, get_cmd
 
 
 def run_checks(task, args):

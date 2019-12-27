@@ -1,7 +1,8 @@
 .DEFAULT_GOAL := test
 
 .PHONY: test
-test: clean lint unit dry
+#test: clean lint unit dry
+test: clean unit dry
 
 .PHONY: lint
 lint:
@@ -14,16 +15,16 @@ lint:
 .PHONY: unit
 unit:
 	@echo "Starting  unit tests"
-	pytest --verbose test_unit.py
+	python -m pytest tests/ --verbose
 	@echo "Completed unit tests"
 
 .PHONY: dry
 dry:
 	@echo "Starting  dryruns"
 	python runbook.py -d
-	python runbook.py -d -f -s terse
-	python runbook.py -d -f -s csv
-	python runbook.py --dryrun --failonly --style json
+	head -n 5 outputs/*
+	python runbook.py --dryrun --failonly
+	head -n 5 outputs/*
 	@echo "Completed dryruns"
 
 .PHONY: clean

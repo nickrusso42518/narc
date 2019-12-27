@@ -1,3 +1,8 @@
+# Author: Nick Russo
+# Purpose: Provide simple "make" targets for developers
+# See README for details about each target.
+
+# Default goal runs the "test" target
 .DEFAULT_GOAL := test
 
 .PHONY: test
@@ -31,4 +36,5 @@ clean:
 	@echo "Starting  clean"
 	find . -name "*.pyc" | xargs -r rm
 	rm -f nornir.log
+	rm -rf output/
 	@echo "Starting  clean"

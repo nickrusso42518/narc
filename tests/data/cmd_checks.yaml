@@ -7,6 +7,9 @@ cmd_checks:
     src_port: 5001
     dst_ip: "192.0.2.2"
     dst_port: 5002
+    expected_cmd: >-
+      packet-tracer input inside tcp
+      192.0.2.1 5001 192.0.2.2 5002 xml
   udp_full:
     in_intf: "inside"
     proto: "udp"
@@ -14,6 +17,9 @@ cmd_checks:
     src_port: 5001
     dst_ip: "192.0.2.2"
     dst_port: 5002
+    expected_cmd: >-
+      packet-tracer input inside udp
+      192.0.2.1 5001 192.0.2.2 5002 xml
   icmp_full:
     in_intf: "inside"
     proto: "icmp"
@@ -21,8 +27,15 @@ cmd_checks:
     dst_ip: "192.0.2.2"
     icmp_type: 8
     icmp_code: 0
+    expected_cmd: >-
+      packet-tracer input inside icmp
+      192.0.2.1 8 0 192.0.2.2 xml
   rawip_full:
     in_intf: "inside"
     proto: 123
     src_ip: "192.0.2.1"
     dst_ip: "192.0.2.2"
+    expected_cmd: >-
+      packet-tracer input inside rawip
+      192.0.2.1 123 192.0.2.2 xml
+...

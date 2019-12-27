@@ -135,20 +135,20 @@ def validate_proto(chk, fail_list):
     and also append the check to the fail_list with a fail reason.
     """
     if not "proto" in chk or not chk["proto"]:
-        _fail_check(chk, fail_list, "'proto' key missing")
+        _fail_check(chk, fail_list, "'proto' key missing or false-y")
         return False
 
     try:
         proto_num = int(chk["proto"])
         # Proto is an int; check range
         if proto_num < 0 or proto_num > 255:
-            _fail_check(chk, fail_list, f"'proto' int must be 0-255")
+            _fail_check(chk, fail_list, "'proto' int must be 0-255")
             return False
 
     except ValueError:
         # Proto is not an int (likely string); check string values
         if chk["proto"].lower() not in ["tcp", "udp", "icmp"]:
-            _fail_check(chk, fail_list, f"'proto' string must be tcp|udp|icmp")
+            _fail_check(chk, fail_list, "'proto' string must be tcp|udp|icmp")
             return False
     return True
 

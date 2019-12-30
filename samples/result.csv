@@ -1,11 +1,11 @@
 host,id,proto,icmp type,icmp code,src_ip,src_port,dst_ip,dst_port,in_intf,out_intf,action,drop_reason,success
 ASAV1,DNS OUTBOUND,udp,,,192.0.2.2,5000,8.8.8.8,53,UNKNOWN,UNKNOWN,allow,,False
 ASAV1,HTTPS OUTBOUND,tcp,,,192.0.2.2,5000,20.0.0.1,443,UNKNOWN,UNKNOWN,allow,,True
-ASAV1,SSH INBOUND,tcp,,,8.8.8.8,5000,192.0.2.2,22,UNKNOWN,UNKNOWN,drop,(acl-drop) Flow is denied by configured rule,True
+ASAV1,SSH INBOUND,tcp,,,fc00:172:31:1::a,5000,fc00:192:0:2::2,22,UNKNOWN,UNKNOWN,drop,(acl-drop) Flow is denied by configured rule,True
 ASAV1,PING OUTBOUND,icmp,8,0,192.0.2.2,,8.8.8.8,,UNKNOWN,UNKNOWN,allow,,True
 ASAV1,L2TP OUTBOUND,115,,,192.0.2.1,,20.0.0.1,,UNKNOWN,UNKNOWN,drop,(acl-drop) Flow is denied by configured rule,True
 ASAV2,DNS OUTBOUND,udp,,,203.0.113.2,5000,8.8.8.8,53,UNKNOWN,UNKNOWN,allow,,True
 ASAV2,HTTPS OUTBOUND,tcp,,,203.0.113.2,5000,20.0.0.1,443,UNKNOWN,UNKNOWN,allow,,False
-ASAV2,SSH INBOUND,tcp,,,8.8.8.8,5000,203.0.113.2,22,UNKNOWN,UNKNOWN,drop,(acl-drop) Flow is denied by configured rule,True
+ASAV2,SSH INBOUND,tcp,,,fc00:172:31:2::a,5000,fc00:203:0:113::2,22,UNKNOWN,UNKNOWN,drop,(acl-drop) Flow is denied by configured rule,True
 ASAV2,PING OUTBOUND,icmp,8,0,203.0.113.2,,8.8.8.8,,UNKNOWN,UNKNOWN,allow,,True
 ASAV2,L2TP OUTBOUND,115,,,192.0.2.1,,20.0.0.1,,UNKNOWN,UNKNOWN,drop,(acl-drop) Flow is denied by configured rule,True

@@ -77,7 +77,7 @@ class ProcCSV(ProcBase):
 
                 # Finish the text by adding the drop reason (optional)
                 # and ingress/egress interfaces, which are protocol-agnostic
-                in_intf = f"{data['root']['result']['input-interface']}"
-                out_intf = f"{data['root']['result']['output-interface']}"
+                in_intf = data["root"]["result"].get("input-interface", "")
+                out_intf = data["root"]["result"].get("output-interface", "")
                 reason = data["root"]["result"].get("drop-reason", "")
                 self.text += f"{in_intf},{out_intf},{action},{reason},{success}\n"

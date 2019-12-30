@@ -19,9 +19,9 @@ checks:
   - id: "SSH INBOUND"
     in_intf: "management"
     proto: "tcp"
-    src_ip: "fc00:192:0:2::2"
+    src_ip: "fc00:172:31:1::a"
+    dst_ip: "fc00:192:0:2::2"
     src_port: 5000
-    dst_ip: "fc00:8:8:8::8"
     dst_port: 22
     should: "drop"
   - id: "PING OUTBOUND"

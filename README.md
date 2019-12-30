@@ -164,9 +164,10 @@ To keep things simple (for now), the tool has some limitations:
 
 ## Testing
 A GNU `Makefile` is used to automate testing with the following targets:
-  * `lint`: Runs `yamllint` and `pylint` linters, pls the `black` formatter
+  * `lint`: Runs `yamllint` and `pylint` linters, a custom JSON linter,
+    and the `black` formatter
   * `unit`: Runs unit tests on helper functions via `pytest`.
   * `dry`: Runs a series of local tests to ensure the code works. These
     do not communicate with any ASAs and are handy for regression testing
-  * `clean`: Deletes any application artifacts, such as `.pyc` and `.log` files
+  * `clean`: Deletes any artifacts, such as `.pyc`, `.log`, and `output/` files
   * `all`: Default target that runs the sequence `clean lint unit dry`

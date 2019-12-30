@@ -1,4 +1,4 @@
-nornir
+nornir==2.3.0
 xmltodict
 yamllint
 pytest

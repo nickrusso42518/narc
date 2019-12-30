@@ -25,9 +25,9 @@ unit:
 .PHONY: dry
 dry:
 	@echo "Starting  dryruns"
-	python runbook.py -d
-	head -n 5 outputs/*
 	python runbook.py --dryrun --failonly
+	head -n 5 outputs/*
+	python runbook.py -d
 	head -n 5 outputs/*
 	@echo "Completed dryruns"
 

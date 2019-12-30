@@ -1,99 +1,121 @@
 ---
 dummy_checks:
-  missing_id:
-    expected_reason: "'id' key missing or false-y"
-  blank_id:
-    id: ""
-    expected_reason: "'id' key missing or false-y"
-  valid_id:
-    id: "test"
-  missing_in_intf:
-    expected_reason: "'in_intf' key missing or false-y"
-  blank_in_intf:
-    in_intf: ""
-    expected_reason: "'in_intf' key missing or false-y"
-  valid_in_intf:
-    in_intf: "inside123"
-  missing_should:
-    expected_reason: "'should' key missing"
-  blank_should:
-    should: ""
-    expected_reason: "'should' value must be allow|drop"
-  invalid_should:
-    should: "invalid"
-    expected_reason: "'should' value must be allow|drop"
-  valid_should:
-    should: "drop"
-  missing_src_ip:
-    dst_ip: "192.0.2.2"
-    expected_reason: "'src_ip' key missing"
-  missing_dst_ip:
-    src_ip: "192.0.2.1"
-    expected_reason: "'dst_ip' key missing"
-  invalid_ip:
-    src_ip: "192.0.2.1"
-    dst_ip: "192.0.2.256"
-    expected_reason: "'dst_ip' must be a v4 or v6 addr"
-  mismatch_ip_ver:
-    src_ip: "192.0.2.1"
-    dst_ip: "fc00::2"
-    expected_reason: "src/dst ip version mismatch (v4 or v6)"
-  duplicate_ipv4:
-    src_ip: "192.0.2.1"
-    dst_ip: "192.0.2.1"
-    expected_reason: "src/dst ip cannot be the same addr"
-  duplicate_ipv6:
-    src_ip: "fc00::2"
-    dst_ip: "fc00::2"
-    expected_reason: "src/dst ip cannot be the same addr"
-  valid_ipv4:
-    src_ip: "192.0.2.1"
-    dst_ip: "192.0.2.2"
-  valid_ipv6:
-    src_ip: "fc00::1"
-    dst_ip: "fc00::2"
-  missing_proto:
-    expected_reason: "'proto' key missing or false-y"
-  blank_proto:
-    proto: ~
-    expected_reason: "'proto' key missing or false-y"
-  invalid_proto_int:
-    proto: 256
-    expected_reason: "'proto' int must be 0-255"
-  invalid_proto_str:
-    proto: "abc"
-    expected_reason: "'proto' string must be tcp|udp|icmp"
-  valid_proto_int:
-    proto: 255
-  valid_proto_str:
-    proto: "udp"
-  missing_src_port:
-    dst_port: 42518
-    expected_reason: "missing tcp/udp 'src_port' key"
-  missing_dst_port:
-    src_port: 42518
-    expected_reason: "missing tcp/udp 'dst_port' key"
-  invalid_port:
-    src_port: 65536
-    dst_port: 42518
-    expected_reason: "'src_port' must be int 0-65535"
-  valid_port:
-    src_port: 0
-    dst_port: 65535
-  missing_icmp_type:
-    icmp_code: 0
-    expected_reason: "missing icmp 'icmp_type' key"
-  missing_icmp_code:
-    icmp_type: 0
-    expected_reason: "missing icmp 'icmp_code' key"
-  invalid_icmp_type:
-    icmp_type: "dog"
-    icmp_code: 0
-    expected_reason: "'icmp_type' must be int 0-255"
-  invalid_icmp_code:
-    icmp_type: 255
-    icmp_code: 256
-    expected_reason: "'icmp_code' must be int 0-255"
-  valid_icmp:
-    icmp_type: 0
-    icmp_code: 255
+  id:
+    missing_id:
+      expected_reason: "'id' key missing or false-y"
+    blank_id:
+      id: ""
+      expected_reason: "'id' key missing or false-y"
+    valid_id:
+      id: "test"
+  in_intf:
+    missing:
+      expected_reason: "'in_intf' key missing or false-y"
+    blank:
+      in_intf: ""
+      expected_reason: "'in_intf' key missing or false-y"
+    valid:
+      in_intf: "inside123"
+  should:
+    missing:
+      expected_reason: "'should' key missing"
+    blank:
+      should: ""
+      expected_reason: "'should' value must be allow|drop"
+    invalid:
+      should: "invalid"
+      expected_reason: "'should' value must be allow|drop"
+    valid_drop:
+      should: "drop"
+    valid_allow:
+      should: "allow"
+  ip:
+    missing_src:
+      dst_ip: "192.0.2.2"
+      expected_reason: "'src_ip' key missing"
+    missing_dst:
+      src_ip: "192.0.2.1"
+      expected_reason: "'dst_ip' key missing"
+    invalid_src:
+      src_ip: "cats"
+      dst_ip: "192.0.2.255"
+      expected_reason: "'src_ip' must be a v4 or v6 addr"
+    invalid_dst:
+      src_ip: "192.0.2.255"
+      dst_ip: "192.0.2.256"
+      expected_reason: "'dst_ip' must be a v4 or v6 addr"
+    mismatch_ver_v4v6:
+      src_ip: "192.0.2.1"
+      dst_ip: "fc00::2"
+      expected_reason: "src/dst ip version mismatch (v4 or v6)"
+    mismatch_ver_v6v4:
+      src_ip: "fc00::2"
+      dst_ip: "192.0.2.1"
+      expected_reason: "src/dst ip version mismatch (v4 or v6)"
+    duplicate_v4:
+      src_ip: "192.0.2.1"
+      dst_ip: "192.0.2.1"
+      expected_reason: "src/dst ip cannot be the same addr"
+    duplicate_v6:
+      src_ip: "fc00::2"
+      dst_ip: "fc00::2"
+      expected_reason: "src/dst ip cannot be the same addr"
+    valid_v4:
+      src_ip: "192.0.2.1"
+      dst_ip: "192.0.2.2"
+    valid_v6:
+      src_ip: "fc00::1"
+      dst_ip: "fc00::2"
+  proto:
+    missing:
+      expected_reason: "'proto' key missing or false-y"
+    blank:
+      proto: ""
+      expected_reason: "'proto' key missing or false-y"
+    invalid_int:
+      proto: 256
+      expected_reason: "'proto' int must be 0-255"
+    invalid_str:
+      proto: "penguins"
+      expected_reason: "'proto' string must be tcp|udp|icmp"
+    valid_int:
+      proto: 255
+    valid_str:
+      proto: "udp"
+  port:
+    missing_src:
+      dst_port: 42518
+      expected_reason: "missing tcp/udp 'src_port' key"
+    missing_dst:
+      src_port: 42518
+      expected_reason: "missing tcp/udp 'dst_port' key"
+    invalid_src:
+      src_port: 65536
+      dst_port: 42518
+      expected_reason: "'src_port' must be int 0-65535"
+    invalid_dst:
+      src_port: 65535
+      dst_port: "elephants"
+      expected_reason: "'dst_port' must be int 0-65535"
+    valid:
+      src_port: 0
+      dst_port: 65535
+  icmp:
+    missing_type:
+      icmp_code: 0
+      expected_reason: "missing icmp 'icmp_type' key"
+    missing_code:
+      icmp_type: 0
+      expected_reason: "missing icmp 'icmp_code' key"
+    invalid_type:
+      icmp_type: "ants"
+      icmp_code: 0
+      expected_reason: "'icmp_type' must be int 0-255"
+    invalid_code:
+      icmp_type: 255
+      icmp_code: 256
+      expected_reason: "'icmp_code' must be int 0-255"
+    valid:
+      icmp_type: 0
+      icmp_code: 255
+...

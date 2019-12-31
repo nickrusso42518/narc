@@ -109,22 +109,20 @@ that there are no duplicate `id` fields across any checks.
 ## Output Formats
 In the past, this program gave the user many options regarding formats. Those
 options are gone, replaced by the following actions.
-  1. A terse, text-based output is printed to `stdout` in the following format:
-     `{host} {check id} -> {PASS or FAIL}`
-     The `{success}` field measures whether the actual result matched the intended
+  1. A terse, text-based output is written to a file named `outputs/result.txt` 
+     The format is: `{host} {check id} -> {PASS or FAIL}`
+     The final field measures whether the actual result matched the intended
      result. Rules that have `should: allow` that actually result in `ALLOW`
-     receive a "PASS". Rules with `should: drop` that actually `DROP` also get a
-     "PASS". Any other combination receives a "FAIL", indicating a mismatch
+     receive a `PASS`. Rules with `should: drop` that actually `DROP` also get a
+     `PASS`. Any other combination receives a `FAIL`, indicating a mismatch
      between intent and reality.
-  2. This "terse" format is also written to a file named `outputs/result.txt`
-     for future reference.
-  3. To provide additional detail, a CSV-formatted string is written to a file
+  2. To provide additional detail, a CSV-formatted string is written to a file
      name `outputs/result.csv`. This option displays a superset of the data in
      the "terse" format. The output includes column headers as well,
      simplifying shell redirection to output files. The command
      below is a handy way to view CSV files from the shell (use arrows to pan):
      `column -s, -t outputs/result.csv | less -S`
-  4. Finally, the program returns the results as structured data in
+  3. Finally, the program returns the results as structured data in
      JSON format to `outputs/result.json`. This data is largely unchanged,
      with the exception of wrapping all of a given host's results under a
      subdictionary with a key equal to the check `id` field. Note that
@@ -132,14 +130,19 @@ options are gone, replaced by the following actions.
      firewall for a given simulation. 
 
 ## Other Options
-To improve usability, the tool offers some minor options.
+To improve usability, the tool offers some command-line options:
 
-To reduce the output generated, users may opt to only see the failures. Use
-`-f` or `--failonly` to apply this filter, which is handy on large
-`check` lists. Note that this affects the terse, CSV, and JSON formats.
+  * To reduce the output generated, users may opt to only see the failures. Use
+   `-f` or `--failonly` to apply this filter, which is handy on large
+   `check` lists. Note that this affects the terse, CSV, and JSON formats.
+  * Some users prefer to see status updates as the script runs. Use
+    `-s` or `--status` to enable logging to `stdout` in the following format:
+    {hostname}@{utc_timestamp}: {msg}
+
+Here are some example outputs to demonstrate these options.
 
 ```
-$ python runbook.py
+$ python runbook.py && cat outputs/result.txt
 ASAV1        DNS OUTBOUND             -> FAIL
 ASAV1        HTTPS OUTBOUND           -> PASS
 ASAV1        SSH INBOUND              -> PASS
@@ -151,9 +154,35 @@ ASAV2        SSH INBOUND              -> PASS
 ASAV2        PING OUTBOUND            -> PASS
 ASAV2        L2TP OUTBOUND            -> PASS
 
-$ python runbook.py --failonly
+$ python runbook.py --failonly && cat outputs/result.txt
 ASAV1        DNS OUTBOUND             -> FAIL
 ASAV2        HTTPS OUTBOUND           -> FAIL
+
+$ python runbook.py --status
+ASAV1@2019-12-31T18:37:57.975656: loading YAML vars
+ASAV1@2019-12-31T18:37:57.978265: loading vars succeeded
+ASAV1@2019-12-31T18:37:57.978427: starting  check DNS OUTBOUND (1/5)
+ASAV2@2019-12-31T18:37:57.978814: loading JSON vars
+ASAV2@2019-12-31T18:37:57.978965: loading vars succeeded
+ASAV2@2019-12-31T18:37:57.979099: starting  check DNS OUTBOUND (1/5)
+ASAV1@2019-12-31T18:38:03.976345: completed check DNS OUTBOUND (1/5)
+ASAV1@2019-12-31T18:38:03.976397: starting  check HTTPS OUTBOUND (2/5)
+ASAV2@2019-12-31T18:38:04.076485: completed check DNS OUTBOUND (1/5)
+ASAV2@2019-12-31T18:38:04.076538: starting  check HTTPS OUTBOUND (2/5)
+ASAV1@2019-12-31T18:38:04.578326: completed check HTTPS OUTBOUND (2/5)
+ASAV1@2019-12-31T18:38:04.578377: starting  check SSH INBOUND (3/5)
+ASAV2@2019-12-31T18:38:04.678691: completed check HTTPS OUTBOUND (2/5)
+ASAV2@2019-12-31T18:38:04.678740: starting  check SSH INBOUND (3/5)
+ASAV1@2019-12-31T18:38:05.180719: completed check SSH INBOUND (3/5)
+ASAV1@2019-12-31T18:38:05.180774: starting  check PING OUTBOUND (4/5)
+ASAV2@2019-12-31T18:38:05.280919: completed check SSH INBOUND (3/5)
+ASAV2@2019-12-31T18:38:05.280967: starting  check PING OUTBOUND (4/5)
+ASAV1@2019-12-31T18:38:05.782703: completed check PING OUTBOUND (4/5)
+ASAV1@2019-12-31T18:38:05.782752: starting  check L2TP OUTBOUND (5/5)
+ASAV2@2019-12-31T18:38:05.883009: completed check PING OUTBOUND (4/5)
+ASAV2@2019-12-31T18:38:05.883055: starting  check L2TP OUTBOUND (5/5)
+ASAV1@2019-12-31T18:38:06.384632: completed check L2TP OUTBOUND (5/5)
+ASAV2@2019-12-31T18:38:06.485029: completed check L2TP OUTBOUND (5/5)
 ```
 
 ## Limitations
@@ -163,6 +192,9 @@ To keep things simple (for now), the tool has some limitations:
      file extensions. This minimizes Nornir modifications.
 
 ## Testing
+This project is extensively tested.
+
+### Regression
 A GNU `Makefile` is used to automate testing with the following targets:
   * `lint`: Runs `yamllint` and `pylint` linters, a custom JSON linter,
     and the `black` formatter
@@ -171,3 +203,12 @@ A GNU `Makefile` is used to automate testing with the following targets:
     do not communicate with any ASAs and are handy for regression testing
   * `clean`: Deletes any artifacts, such as `.pyc`, `.log`, and `output/` files
   * `all`: Default target that runs the sequence `clean lint unit dry`
+
+### Scalability/performance
+It is unlikely that this project will be run on a large number of inventory
+devices. That is, the number of ASAs in scope is likely to be small. However,
+the length of the `checks` list for each ASA is likely to be large, especially
+for more complex rulesets. The outputs below provide some "wall clock"
+completion times for a variety of `checks` list lengths.
+
+

@@ -56,4 +56,3 @@ class ProcTerse(ProcBase):
                 status = "PASS" if success else "FAIL"
                 output = f"{host.name[:12]:<12} {chk['id'][:24]:<24} -> {status}"
                 self.text += output + "\n"
-                print(output)

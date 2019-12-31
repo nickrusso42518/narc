@@ -38,19 +38,31 @@ def main(args):
         sys.exit(1)
 
 
-if __name__ == "__main__":
-    # Use argparse to account for various command line options (-d and -f)
-    PARSER = argparse.ArgumentParser()
-    PARSER.add_argument(
+def _process_args():
+    """
+    Process command line arguments according to README.
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
         "-f",
         "--failonly",
         help="print failures (ie, undesirable results) only",
         action="store_true",
     )
-    PARSER.add_argument(
+    parser.add_argument(
         "-d",
         "--dryrun",
         help="run offline system test (no devices needed)",
         action="store_true",
     )
-    main(PARSER.parse_args())
+    parser.add_argument(
+        "-s",
+        "--status",
+        help="log timestamped status messages during runtime",
+        action="store_true",
+    )
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    main(_process_args())

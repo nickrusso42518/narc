@@ -8,7 +8,7 @@ Purpose: Define custom Nornir tasks for use with the main runbook.
 import os
 from nornir.plugins.tasks.networking import netmiko_send_command
 from nornir.plugins.tasks.data import load_json, load_yaml
-from narc.helpers import validate_checks, get_cmd
+from narc.helpers import validate_checks, get_cmd, status
 
 
 def run_checks(task, args):
@@ -19,7 +19,7 @@ def run_checks(task, args):
     """
 
     # Load the checks for each inventory host
-    checks = _load_checks(task)
+    checks = _load_checks(task, args)
 
     # Validate the checks. If any fail, quit early and return the failures
     fail_checks = validate_checks(checks)
@@ -27,7 +27,11 @@ def run_checks(task, args):
         return fail_checks
 
     # Iterate over the user-supplied checks
-    for chk in checks:
+    total = len(checks)
+    for i, chk in enumerate(checks):
+
+        item = chk["id"]
+        status(args.status, task, f"starting  check {item} ({i+1}/{total})")
 
         # If dryrun, use the mock task (regression testing only)
         if args.dryrun:
@@ -39,11 +43,13 @@ def run_checks(task, args):
             cmd = get_cmd(chk)
             task.run(task=netmiko_send_command, command_string=cmd)
 
+        status(args.status, task, f"completed check {item} ({i+1}/{total})")
+
     # Nornir handles this by default, but being explicit makes logic easier
     return None
 
 
-def _load_checks(task):
+def _load_checks(task, args):
     """
     Loads in host-specific variables from JSON (primary) or YAML
     (secondary) files from the 'host_vars/' directory.
@@ -53,13 +59,17 @@ def _load_checks(task):
     # If neither are present, raise a FileNotFoundError
     file_base = f"host_vars/{task.host.name}"
     if os.path.exists(f"{file_base}.json"):
+        status(args.status, task, "loading JSON vars")
         check_result = task.run(task=load_json, file=f"{file_base}.json")
     elif os.path.exists(f"{file_base}.yaml"):
+        status(args.status, task, "loading YAML vars")
         check_result = task.run(task=load_yaml, file=f"{file_base}.yaml")
     else:
+        status(args.status, task, "no JSON/YAML vars file")
         raise FileNotFoundError(f"{file_base} json/yaml file missing")
 
     # Extract the "checks" list from inside the Result/MR objects
+    status(args.status, task, "loading vars succeeded")
     return check_result[0].result["checks"]
 
 

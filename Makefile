@@ -28,7 +28,7 @@ dry:
 	@echo "Starting  dryruns"
 	python runbook.py --dryrun --failonly
 	head -n 5 outputs/*
-	python runbook.py -d
+	python runbook.py -d -s
 	head -n 5 outputs/*
 	@echo "Completed dryruns"
 

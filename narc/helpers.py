@@ -7,8 +7,20 @@ These cannot be fed directly into Nornir but can be referenced within
 those tasks.
 """
 
+from datetime import datetime
 from netaddr import IPAddress
 from netaddr.core import AddrFormatError
+
+
+def status(condition, task, msg):
+    """
+    Print the supplied message when the condition is true using
+    the following format:
+      {hostname}@{utc_timestamp}: {msg}
+    """
+    if condition:
+        time = datetime.utcnow().isoformat()
+        print(f"{task.host.name}@{time}: {msg}")
 
 
 def validate_checks(checks):

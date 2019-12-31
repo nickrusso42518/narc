@@ -8,7 +8,19 @@ flows across the firewall. On a per-ASA basis, users specify a list of
 simulations in YAML or JSON format. This program returns the result of those
 tests in a variety of formats. Both IPv4 and IPv6 are supported.
 
-## High-level Structure
+> Contact information:\
+> Email:    njrusmc@gmail.com\
+> Twitter:  @nickrusso42518
+
+  * [Components](#components)
+  * [Variables](#variables)
+  * [Validation](#validation)
+  * [Output Formats](#output-formats)
+  * [Other Options](#other-options)
+  * [Limitations](#limitations)
+  * [Testing](#testing)
+
+## Components
 This project is built on two powerful Python-based tools:
   1. [Nornir](https://github.com/nornir-automation/nornir),
      a  task execution framework with concurrency support
@@ -137,7 +149,7 @@ To improve usability, the tool offers some command-line options:
    `check` lists. Note that this affects the terse, CSV, and JSON formats.
   * Some users prefer to see status updates as the script runs. Use
     `-s` or `--status` to enable logging to `stdout` in the following format:
-    {hostname}@{utc_timestamp}: {msg}
+    `{hostname}@{utc_timestamp}: {msg}`
 
 Here are some example outputs to demonstrate these options.
 
@@ -192,7 +204,17 @@ To keep things simple (for now), the tool has some limitations:
      file extensions. This minimizes Nornir modifications.
 
 ## Testing
-This project is extensively tested.
+This project is extensively tested. All testing conducted on
+the following ASAv virtual appliance:
+```
+ASAV1# show version
+
+Cisco Adaptive Security Appliance Software Version 9.12(2)
+Firepower Extensible Operating System Version 2.6(1.141)
+
+Hardware:   ASAv, 8192 MB RAM, CPU Xeon E5 series 2300 MHz, 1 CPU (2 cores)
+Model Id:   ASAv10
+```
 
 ### Regression
 A GNU `Makefile` is used to automate testing with the following targets:
@@ -204,11 +226,76 @@ A GNU `Makefile` is used to automate testing with the following targets:
   * `clean`: Deletes any artifacts, such as `.pyc`, `.log`, and `output/` files
   * `all`: Default target that runs the sequence `clean lint unit dry`
 
-### Scalability/performance
+### Performance
 It is unlikely that this project will be run on a large number of inventory
 devices. That is, the number of ASAs in scope is likely to be small. However,
 the length of the `checks` list for each ASA is likely to be large, especially
 for more complex rulesets. The outputs below provide some "wall clock"
-completion times for a variety of `checks` list lengths.
+completion times for a variety of `checks` list lengths. In general, the
+intial `netmiko` connectivity and issuance of the first command takes about
+5 seconds. Each subsequent command takes about 750 ms. Both of these
+estimates assume very low latency (less than 5 ms) and only
+using local authentication/authorization (no RADIUS/TACACS).
 
+#### 10 checks, 1 host
+Completed in approximately 10 seconds.
+```
+$ python runbook.py --status
+ASAV1@2019-12-31T18:44:27.589602: loading YAML vars
+ASAV1@2019-12-31T18:44:27.594586: loading vars succeeded
+ASAV1@2019-12-31T18:44:27.594787: starting  check test0 (1/10)
+ASAV1@2019-12-31T18:44:32.559337: completed check test0 (1/10)
+(snip)
+ASAV1@2019-12-31T18:44:37.377834: starting  check test9 (10/10)
+ASAV1@2019-12-31T18:44:37.979797: completed check test9 (10/10)
+```
 
+#### 100 checks, 1 host
+Completed in approximately 65 seconds (1 minute).
+```
+$ python runbook.py --status
+ASAV1@2019-12-31T18:46:32.466578: loading YAML vars
+ASAV1@2019-12-31T18:46:32.493279: loading vars succeeded
+ASAV1@2019-12-31T18:46:32.494623: starting  check test0 (1/100)
+ASAV1@2019-12-31T18:46:37.458609: completed check test0 (1/100)
+{snip)
+ASAV1@2019-12-31T18:47:36.459852: starting  check test99 (100/100)
+ASAV1@2019-12-31T18:47:37.061772: completed check test99 (100/100)
+
+```
+
+#### 1000 checks, 1 host
+Completed in approximately 607 seconds (10 minutes).
+```
+$ python runbook.py --status
+ASAV1@2019-12-31T18:51:55.426311: loading YAML vars
+ASAV1@2019-12-31T18:51:55.667978: loading vars succeeded
+ASAV1@2019-12-31T18:51:55.681037: starting  check test0 (1/1000)
+ASAV1@2019-12-31T18:52:00.645887: completed check test0 (1/1000)
+(snip)
+ASAV1@2019-12-31T19:02:01.469790: starting  check test999 (1000/1000)
+ASAV1@2019-12-31T19:02:02.071796: completed check test999 (1000/1000)
+```
+
+#### 1000 checks, 2 hosts
+Completed in approximately 607 seconds (10 minutes). Also notice that the
+JSON variable loading with `ASAV2` took approximately 3 ms while the YAML
+variable lodaing with `ASAV1` took approximately 300 ms. For rulesets
+thousands of items in the `checks` list, using JSON is recommended. Last,
+so long as your Linux machine has enough CPU cores/sockets for each host,
+additional hosts will not meaningfully impact completion times.
+```
+$ python runbook.py --status
+ASAV1@2019-12-31T19:05:24.926371: loading YAML vars
+ASAV2@2019-12-31T19:05:24.947493: loading JSON vars
+ASAV2@2019-12-31T19:05:24.950366: loading vars succeeded
+ASAV2@2019-12-31T19:05:24.962976: starting  check test0 (1/1000)
+ASAV1@2019-12-31T19:05:25.223925: loading vars succeeded
+ASAV1@2019-12-31T19:05:25.236867: starting  check test0 (1/1000)
+ASAV2@2019-12-31T19:05:30.148560: completed check test0 (1/1000)
+ASAV1@2019-12-31T19:05:30.199834: completed check test0 (1/1000)
+ASAV2@2019-12-31T19:15:30.996224: starting  check test999 (1000/1000)
+ASAV1@2019-12-31T19:15:31.009734: starting  check test999 (1000/1000)
+ASAV2@2019-12-31T19:15:31.598462: completed check test999 (1000/1000)
+ASAV1@2019-12-31T19:15:31.623626: completed check test999 (1000/1000)
+```

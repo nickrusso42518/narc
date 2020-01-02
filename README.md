@@ -280,7 +280,7 @@ ASAV1@2019-12-31T19:02:02.071796: completed check test999 (1000/1000)
 #### 1000 checks, 2 hosts
 Completed in approximately 607 seconds (10 minutes). Also notice that the
 JSON variable loading with `ASAV2` took approximately 3 ms while the YAML
-variable lodaing with `ASAV1` took approximately 300 ms. For rulesets
+variable lodaing with `ASAV1` took approximately 300 ms. For rulesets with
 thousands of items in the `checks` list, using JSON is recommended. Last,
 so long as your Linux machine has enough CPU cores/sockets for each host,
 additional hosts will not meaningfully impact completion times.
@@ -294,6 +294,7 @@ ASAV1@2019-12-31T19:05:25.223925: loading vars succeeded
 ASAV1@2019-12-31T19:05:25.236867: starting  check test0 (1/1000)
 ASAV2@2019-12-31T19:05:30.148560: completed check test0 (1/1000)
 ASAV1@2019-12-31T19:05:30.199834: completed check test0 (1/1000)
+(sbip)
 ASAV2@2019-12-31T19:15:30.996224: starting  check test999 (1000/1000)
 ASAV1@2019-12-31T19:15:31.009734: starting  check test999 (1000/1000)
 ASAV2@2019-12-31T19:15:31.598462: completed check test999 (1000/1000)

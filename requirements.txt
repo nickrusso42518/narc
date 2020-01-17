@@ -2,6 +2,6 @@ nornir==2.3.0
 xmltodict
 yamllint
 pytest
-pylint
+pylint=2.4.4
 argparse
 black

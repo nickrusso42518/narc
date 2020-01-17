@@ -27,13 +27,18 @@ This project is built on two powerful Python-based tools:
   2. [Netmiko](https://github.com/ktbyers/netmiko),
      a library for accessing network device command lines
 
+Below is a diagram of the high-level architecture. The text of this README
+explains all the individual components, including those not shown.
+![High-level Architecture](img/narc.jpg)
+
 ## Variables
 The `host_vars/` directory contains individual YAML files, one per ASA, that
 contain a list of dictionaries named `checks`. Using Nornir for concurrency
 and Netmiko for SSH-based device access, the tool issues a `packet-tracer`
 command for each check. The data is returned as XML which is easily converted
-into Python data structures. An example file might be `host_vars/asa1.yaml`,
-which is shown below.
+into Python data structures for further processing. To keep things simple for
+users, XML is never exposed outside of the program (see "Output Formats").
+An example file might be `host_vars/asa1.yaml`, which is shown below.
 
 ```
 ---

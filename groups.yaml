@@ -1,6 +1,18 @@
 ---
+# General base group that contains common info, like credentials.
+# Other groups inherit from this group to improve code reuse
+devices:
+  username: "cisco"
+  password: "cisco"
+
+# Cisco ASA group using the build-in netmiko device_type
 asa:
-  username: "pyuser"
-  password: "pypass"
   platform: "cisco_asa"
+  groups: ["devices"]
+
+# Cisco FTD group using a generic (imperfect) device_type as an
+# FTD specific device_type does not yet exist in netmiko
+ftd:
+  platform: "generic_termserver"
+  groups: ["devices"]
 ...

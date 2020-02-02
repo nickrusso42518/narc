@@ -38,8 +38,6 @@ class ProcTerse(ProcBase):
         the text output based on the results, and append them to
         the text string for use later.
         """
-        if isinstance(mresult[1].result, str):
-            breakpoint()
         checks = mresult[1].result["checks"]
         failonly = task.params["args"].failonly
 

@@ -1,9 +1,13 @@
 ---
 ASAV1:
-  hostname: "172.31.90.185"
+  hostname: "192.0.2.1"
   groups: ["asa"]
 
 ASAV2:
-  hostname: "172.31.82.90"
+  hostname: "192.0.2.2"
   groups: ["asa"]
+
+FTDV3:
+  hostname: "192.0.2.3"
+  groups: ["ftd"]
 ...

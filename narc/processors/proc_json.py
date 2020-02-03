@@ -56,7 +56,6 @@ class ProcJSON(ProcBase):
             # Convert from XML to Python objects, using the check id
             # hostname as the topmost key. Use a dummy key in case the
             # check id has spaces (which should be honored)
-            # chk_id = chk["id"].replace(" ", "_")
             jdata = xmltodict.parse(f"<dummy>{output.result}</dummy>")
 
             # Replace dummy key with ID (can contain spaces)

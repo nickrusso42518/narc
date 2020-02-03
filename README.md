@@ -6,7 +6,9 @@ https://travis-ci.org/nickrusso42518/narc)
 This simple program uses the Cisco ASA `packet-tracer` utility to test traffic
 flows across the firewall. On a per-ASA basis, users specify a list of
 simulations in YAML or JSON format. This program returns the result of those
-tests in a variety of formats. Both IPv4 and IPv6 are supported.
+tests in a variety of formats. Both IPv4 and IPv6 are supported. Despite the
+name, this tool also supports Cisco Firepower Threat Defense (FTD) as the
+`packet-tracer` utility is available in FTD.
 
 > Contact information:\
 > Email:    njrusmc@gmail.com\
@@ -299,7 +301,7 @@ ASAV1@2019-12-31T19:05:25.223925: loading vars succeeded
 ASAV1@2019-12-31T19:05:25.236867: starting  check test0 (1/1000)
 ASAV2@2019-12-31T19:05:30.148560: completed check test0 (1/1000)
 ASAV1@2019-12-31T19:05:30.199834: completed check test0 (1/1000)
-(sbip)
+(snip)
 ASAV2@2019-12-31T19:15:30.996224: starting  check test999 (1000/1000)
 ASAV1@2019-12-31T19:15:31.009734: starting  check test999 (1000/1000)
 ASAV2@2019-12-31T19:15:31.598462: completed check test999 (1000/1000)

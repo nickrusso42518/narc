@@ -11,8 +11,12 @@ asa:
   groups: ["devices"]
 
 # Cisco FTD group using a generic (imperfect) device_type as an
-# FTD specific device_type does not yet exist in netmiko
+# FTD specific device_type does not yet exist in netmiko. Also
+# specify Netmiko options to find the ">" prompt correctly
 ftd:
   platform: "generic_termserver"
   groups: ["devices"]
+  data:
+    netmiko_expect_string: "\\s+>\\s+$"
+    netmiko_delay_factor: 5
 ...

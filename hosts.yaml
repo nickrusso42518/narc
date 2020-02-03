@@ -7,7 +7,7 @@ ASAV2:
   hostname: "192.0.2.2"
   groups: ["asa"]
 
-FTDV3:
-  hostname: "192.0.2.3"
-  groups: ["ftd"]
+# FTDV3:
+#   hostname: "192.0.2.3"
+#   groups: ["ftd"]
 ...

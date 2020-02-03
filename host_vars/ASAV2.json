@@ -44,7 +44,7 @@
       "id": "L2TP OUTBOUND",
       "in_intf": "inside",
       "proto": 115,
-      "src_ip": "192.0.2.1",
+      "src_ip": "203.0.113.2",
       "dst_ip": "20.0.0.1",
       "should": "drop"
     }

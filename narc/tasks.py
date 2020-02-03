@@ -30,6 +30,7 @@ def run_checks(task, args):
     total = len(checks)
     for i, chk in enumerate(checks):
 
+        # Store the current item and print a starting status message
         item = chk["id"]
         status(args.status, task, f"starting  check {item} ({i+1}/{total})")
 
@@ -38,11 +39,18 @@ def run_checks(task, args):
             task.run(task=_mock_packet_trace, chk=chk)
 
         # Else, it's a live run, assemble the packet-tracer command
-        # and send to the ASA using netmiko
+        # and send to the ASA using netmiko. If the individual host
+        # has defined Netmiko minor options, include them
         else:
             cmd = get_cmd(chk)
-            task.run(task=netmiko_send_command, command_string=cmd)
+            task.run(
+                task=netmiko_send_command,
+                command_string=cmd,
+                expect_string=task.host.get("netmiko_expect_string"),
+                delay_factor=task.host.get("netmiko_delay_factor", 1),
+            )
 
+        # Print a completed status message
         status(args.status, task, f"completed check {item} ({i+1}/{total})")
 
     # Nornir handles this by default, but being explicit makes logic easier

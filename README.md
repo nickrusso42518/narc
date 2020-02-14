@@ -2,13 +2,19 @@
 https://travis-ci.org/nickrusso42518/narc.svg?branch=master)](
 https://travis-ci.org/nickrusso42518/narc)
 
-# Nornir ASA Rule Checker
+[![published](
+http://cs.co/codeex-badge)](
+https://developer.cisco.com/codeexchange/github/repo/nickrusso42518/mkfd)
+
+# Nornir/Netmiko ASA Rule Checker
 This simple program uses the Cisco ASA `packet-tracer` utility to test traffic
 flows across the firewall. On a per-ASA basis, users specify a list of
 simulations in YAML or JSON format. This program returns the result of those
-tests in a variety of formats. Both IPv4 and IPv6 are supported. Despite the
-name, this tool also supports Cisco Firepower Threat Defense (FTD) as the
-`packet-tracer` utility is available in FTD.
+tests in a variety of formats. Both IPv4 and IPv6 are supported.
+
+This project has limited functionality on Cisco Firepower Threat Defense
+(FTD) as the `packet-tracer` utility is available in FTD. **FTD support is
+experimental and is not particularly stable nor extensively tested.**
 
 > Contact information:\
 > Email:    njrusmc@gmail.com\

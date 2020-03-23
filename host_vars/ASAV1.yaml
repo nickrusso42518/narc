@@ -7,7 +7,7 @@ checks:
     src_port: 5000
     dst_ip: "8.8.8.8"
     dst_port: 53
-    should: "drop"
+    should: "allow"
   - id: "HTTPS OUTBOUND"
     in_intf: "inside"
     proto: "tcp"

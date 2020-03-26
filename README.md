@@ -1,10 +1,10 @@
 [![Build Status](
-https://travis-ci.org/nickrusso42518/narc.svg?branch=master)](
-https://travis-ci.org/nickrusso42518/narc)
+https://travis-ci.com/nickrusso42518/narc.svg?branch=master)](
+https://travis-ci.com/nickrusso42518/narc)
 
 [![published](
 http://cs.co/codeex-badge)](
-https://developer.cisco.com/codeexchange/github/repo/nickrusso42518/mkfd)
+https://developer.cisco.com/codeexchange/github/repo/nickrusso42518/narc)
 
 # Nornir/Netmiko ASA Rule Checker
 This simple program uses the Cisco ASA `packet-tracer` utility to test traffic

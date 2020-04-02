@@ -37,5 +37,5 @@ clean:
 	@echo "Starting  clean"
 	find . -name "*.pyc" | xargs -r rm
 	rm -f nornir.log
-	rm -rf output/
+	rm -rf outputs/
 	@echo "Starting  clean"

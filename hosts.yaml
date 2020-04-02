@@ -1,10 +1,10 @@
 ---
 ASAV1:
-  hostname: "192.0.2.1"
+  hostname: "asav1.njrusmc.net"
   groups: ["asa"]
 
 ASAV2:
-  hostname: "192.0.2.2"
+  hostname: "asav2.njrusmc.net"
   groups: ["asa"]
 
 # FTDV3:

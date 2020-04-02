@@ -2,8 +2,8 @@
 # General base group that contains common info, like credentials.
 # Other groups inherit from this group to improve code reuse
 devices:
-  username: "cisco"
-  password: "cisco"
+  username: "devnet"
+  password: "devnet"
 
 # Cisco ASA group using the build-in netmiko device_type
 asa:

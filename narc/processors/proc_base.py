@@ -27,10 +27,8 @@ class ProcBase:
         AggregatedResult.
         """
         # pylint: disable=unused-argument,no-self-use
-        try:
-            os.mkdir("outputs")
-        except FileExistsError:
-            pass
+        if not os.path.exists("outputs"):
+            os.makedirs("outputs")
 
     def task_instance_started(self, task, host):
         """

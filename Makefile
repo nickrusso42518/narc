@@ -14,6 +14,7 @@ lint:
 	find . -name "*.yaml" | xargs yamllint -s
 	python tests/jsonlint.py
 	find . -name "*.py" | xargs pylint
+	find . -name "*.py" | xargs bandit --skip B101
 	find . -name "*.py" | xargs black -l 85 --check
 	@echo "Completed lint"
 

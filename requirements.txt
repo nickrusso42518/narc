@@ -5,3 +5,4 @@ pytest
 pylint==2.4.4
 argparse
 black
+bandit

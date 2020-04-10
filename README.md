@@ -20,6 +20,7 @@ experimental and is not particularly stable nor extensively tested.**
 > Email:    njrusmc@gmail.com\
 > Twitter:  @nickrusso42518
 
+  * [Installation](#installation)
   * [Components](#components)
   * [Variables](#variables)
   * [Validation](#validation)
@@ -27,6 +28,15 @@ experimental and is not particularly stable nor extensively tested.**
   * [Other Options](#other-options)
   * [Limitations](#limitations)
   * [Testing](#testing)
+
+## Installation
+Follows these steps to get started. This assumes you have Python 3.6 or
+newer already installed, along with `pip` for Python package management:
+  1. Clone the repository: `git clone https://github.com/nickrusso42518/narc.git`
+  2. Create a new virtual environment (venv): `python3.6 -m venv ~/narc`
+  3. Activate the new venv: `source ~/narc/bin/activate`
+  4. Install packages into the venv: `pip install -r requirements.txt`
+  5. Type `make` and ensure all tests pass. See "Testing" for more details.
 
 ## Components
 This project is built on two powerful Python-based tools:
